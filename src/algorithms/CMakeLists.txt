@@ -1,7 +1,5 @@
 # Source files
 list(APPEND SRC_SOURCE
-	func.cpp
-	func.h
 	insertion_sort.hpp
 )
 SOURCE_GROUP("Source" FILES ${SRC_SOURCE})

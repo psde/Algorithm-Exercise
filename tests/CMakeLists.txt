@@ -1,6 +1,6 @@
 # Test files
 list(APPEND SRC_SOURCE
-	func_test.cpp
+	test.cpp
 )
 SOURCE_GROUP("Tests" FILES ${SRC_SOURCE})
 

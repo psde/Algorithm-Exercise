@@ -1,7 +1,6 @@
 #include <iostream>
 #include <random>
 
-#include "func.h"
 #include "insertion_sort.hpp"
 
 int main()
@@ -25,5 +24,5 @@ int main()
 		std::cout << f << std::endl;
 	}
 
-	system("pause");
+	getchar();
 }
