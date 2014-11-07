@@ -2,7 +2,7 @@
 
 #include <array>
 
-namespace insertion_sort {
+namespace InsertionSort {
 	template <typename T, size_t S>
 	void sort(std::array<T, S> &array)
 	{
@@ -20,7 +20,7 @@ namespace insertion_sort {
 	}
 }
 
-namespace insertion_sort_guard {
+namespace InsertionSortGuard {
 	template <typename T, size_t S>
 	void sort(std::array<T, S> &array)
 	{
@@ -48,7 +48,7 @@ namespace insertion_sort_guard {
 	}
 }
 
-namespace insertion_sort_guard_transformed {
+namespace InsertionSortGuardTransformed {
 	template <typename T, size_t S>
 	void sort(std::array<T, S> &array)
 	{
