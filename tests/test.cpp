@@ -1,12 +1,13 @@
 #include <random>
 #include <memory>
+#include <functional>
 
 #include "gtest/gtest.h"
 
 #include "insertion_sort.hpp"
 
 // Size of all arrays used in testing
-const unsigned int ArraySize = 10000u;
+const unsigned int ArraySize = 100u;
 
 // All types that are used in testing
 typedef ::testing::Types<int, float, double> SortingTypes;
@@ -96,40 +97,28 @@ TYPED_TEST_CASE(RandomArray, SortingTypes);
 TYPED_TEST_CASE(AscendingArray, SortingTypes);
 TYPED_TEST_CASE(DescendingArray, SortingTypes);
 
-// InsertionSort testing
-TYPED_TEST(RandomArray, InsertionSort)
-{
-	InsertionSort::sort(arr);
-	EXPECT_TRUE(isSorted(arr));
-}
-TYPED_TEST(AscendingArray, InsertionSort)
-{
-	EXPECT_TRUE(isSorted(arr));
-	InsertionSort::sort(arr);
-	EXPECT_TRUE(isSorted(arr));
-}
-TYPED_TEST(DescendingArray, InsertionSort)
-{
-	EXPECT_FALSE(isSorted(arr));
-	InsertionSort::sort(arr);
-	EXPECT_TRUE(isSorted(arr));
+// Macro for testing different sorters
+#define TEST_SORTER(NAMESPACE) \
+TYPED_TEST(RandomArray, NAMESPACE) \
+{ \
+	NAMESPACE::sort(arr); \
+	EXPECT_TRUE(isSorted(arr)); \
+} \
+TYPED_TEST(AscendingArray, NAMESPACE) \
+{ \
+	EXPECT_TRUE(isSorted(arr)); \
+	NAMESPACE::sort(arr); \
+	EXPECT_TRUE(isSorted(arr)); \
+} \
+TYPED_TEST(DescendingArray, NAMESPACE) \
+{ \
+	EXPECT_FALSE(isSorted(arr)); \
+	NAMESPACE::sort(arr); \
+	EXPECT_TRUE(isSorted(arr)); \
 }
 
-// InsertionSortGuard
-TYPED_TEST(RandomArray, InsertionSortGuard)
-{
-	InsertionSortGuard::sort(arr);
-	EXPECT_TRUE(isSorted(arr));
-}
-TYPED_TEST(AscendingArray, InsertionSortGuard)
-{
-	EXPECT_TRUE(isSorted(arr));
-	InsertionSortGuard::sort(arr);
-	EXPECT_TRUE(isSorted(arr));
-}
-TYPED_TEST(DescendingArray, InsertionSortGuard)
-{
-	EXPECT_FALSE(isSorted(arr));
-	InsertionSortGuard::sort(arr);
-	EXPECT_TRUE(isSorted(arr));
-}
+// Test InsertionSort
+TEST_SORTER(InsertionSort);
+
+// Test InsertionSortGuard
+TEST_SORTER(InsertionSortGuard);
