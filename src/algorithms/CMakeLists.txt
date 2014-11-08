@@ -1,6 +1,7 @@
 # Source files
 list(APPEND SRC_SOURCE
 	insertion_sort.hpp
+	dummy.cpp
 )
 SOURCE_GROUP("Source" FILES ${SRC_SOURCE})
 
