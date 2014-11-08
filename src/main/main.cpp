@@ -16,7 +16,7 @@ int main()
 		std::cout << f << std::endl;
 	}
 	
-	insertion_sort::sort<float, 5>(array);
+	InsertionSort::sort<float, 5>(array);
 
 	std::cout << "sorted:" << std::endl;
 	for (auto f : array)
