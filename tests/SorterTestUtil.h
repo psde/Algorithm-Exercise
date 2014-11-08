@@ -1,16 +1,14 @@
+#pragma once
+
+#include <array>
 #include <random>
 #include <memory>
 #include <functional>
 
 #include "gtest/gtest.h"
 
-#include "insertion_sort.hpp"
-
 // Size of all arrays used in testing
-const unsigned int ArraySize = 100u;
-
-// All types that are used in testing
-typedef ::testing::Types<int, float, double> SortingTypes;
+const unsigned int ArraySize = 1000u;
 
 // Returns 'true' if an array is sorted, false otherwise
 template<class T, size_t S>
@@ -92,13 +90,16 @@ private:
 	}
 };
 
+// All types that are used in testing
+typedef ::testing::Types<int, float, double> SortingTypes;
+
 // Register types for the three test cases
 TYPED_TEST_CASE(RandomArray, SortingTypes);
 TYPED_TEST_CASE(AscendingArray, SortingTypes);
 TYPED_TEST_CASE(DescendingArray, SortingTypes);
 
 // Macro for testing different sorters
-#define TEST_SORTER(NAMESPACE) \
+#define SORTER_TEST_CASE(NAMESPACE) \
 TYPED_TEST(RandomArray, NAMESPACE) \
 { \
 	NAMESPACE::sort(arr); \
@@ -116,9 +117,3 @@ TYPED_TEST(DescendingArray, NAMESPACE) \
 	NAMESPACE::sort(arr); \
 	EXPECT_TRUE(isSorted(arr)); \
 }
-
-// Test InsertionSort
-TEST_SORTER(InsertionSort);
-
-// Test InsertionSortGuard
-TEST_SORTER(InsertionSortGuard);

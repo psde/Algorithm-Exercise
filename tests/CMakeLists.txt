@@ -1,6 +1,7 @@
 # Test files
 list(APPEND SRC_SOURCE
-	test.cpp
+	SorterTestUtil.h
+	SorterTest.cpp
 )
 SOURCE_GROUP("Tests" FILES ${SRC_SOURCE})
 
