@@ -4,7 +4,7 @@
 
 #include "SorterTestUtil.h"
 
-#include "insertion_sort.hpp"
+#include "algorithms/insertion_sort.hpp"
 
 // Test InsertionSort
 SORTER_TEST_CASE(InsertionSort);
