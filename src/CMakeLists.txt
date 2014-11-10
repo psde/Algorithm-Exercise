@@ -7,7 +7,8 @@ SOURCE_GROUP("Algorithms" FILES ${SRC_ALGORITHMS})
 # Tests sources
 list(APPEND SRC_TESTS
 	tests/SorterTest.cpp
-	tests/SorterTestUtil.h
+	tests/SorterTest.h
+	tests/TestUtil.h
 )
 SOURCE_GROUP("Tests" FILES ${SRC_TESTS})
 
