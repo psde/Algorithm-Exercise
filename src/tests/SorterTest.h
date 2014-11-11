@@ -41,7 +41,7 @@ namespace SorterTest
 	private:
 		void generateArray()
 		{
-			arr = std::move(TestUtil::generateAscendingArray<T, ArraySize>());
+			this->arr = std::move(TestUtil::generateAscendingArray<T, ArraySize>());
 		}
 	};
 
@@ -52,7 +52,7 @@ namespace SorterTest
 	private:
 		void generateArray()
 		{
-			arr = std::move(TestUtil::generateDescendingArray<T, ArraySize>());
+			this->arr = std::move(TestUtil::generateDescendingArray<T, ArraySize>());
 		}
 	};
 
@@ -69,19 +69,19 @@ namespace SorterTest
 	#define SORTER_TEST_CASE(NAMESPACE) \
 	TYPED_TEST(RandomArray, NAMESPACE) \
 	{ \
-		NAMESPACE::sort(*arr.get()); \
-		EXPECT_TRUE(TestUtil::isSorted(*arr.get())); \
+		NAMESPACE::sort(*this->arr.get()); \
+		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
 	} \
 	TYPED_TEST(AscendingArray, NAMESPACE) \
 	{ \
-		EXPECT_TRUE(TestUtil::isSorted(*arr.get())); \
-		NAMESPACE::sort(*arr.get()); \
-		EXPECT_TRUE(TestUtil::isSorted(*arr.get())); \
+		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
+		NAMESPACE::sort(*this->arr.get()); \
+		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
 	} \
 	TYPED_TEST(DescendingArray, NAMESPACE) \
 	{ \
-		EXPECT_FALSE(TestUtil::isSorted(*arr.get())); \
-		NAMESPACE::sort(*arr.get()); \
-		EXPECT_TRUE(TestUtil::isSorted(*arr.get())); \
+		EXPECT_FALSE(TestUtil::isSorted(*this->arr.get())); \
+		NAMESPACE::sort(*this->arr.get()); \
+		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
 	}
 }

@@ -11,7 +11,7 @@ namespace TestUtil
 	template<class T, size_t S>
 	bool isSorted(std::array<T, S> arr)
 	{
-		for (int i = 1; i < S; ++i)
+		for (size_t i = 1; i < S; ++i)
 		{
 			if (arr[i] < arr[i - 1])
 			{
@@ -30,7 +30,7 @@ namespace TestUtil
 
 		std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
 
-		for (int i = 0; i < S; ++i)
+		for (size_t i = 0; i < S; ++i)
 		{
 			arr->operator[](i) = static_cast<T>(f_rand(gen));
 		}
@@ -43,7 +43,7 @@ namespace TestUtil
 	{
 		std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
 
-		for (int i = 0; i < S; ++i)
+		for (size_t i = 0; i < S; ++i)
 		{
 			arr->operator[](i) = static_cast<T>(i);
 		}
@@ -56,7 +56,7 @@ namespace TestUtil
 	{
 		std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
 
-		for (int i = 0; i < S; ++i)
+		for (size_t i = 0; i < S; ++i)
 		{
 			arr->operator[](i) = static_cast<T>(S - i);
 		}
