@@ -1,10 +1,12 @@
 #pragma once
 
 #include <array>
+#include <string>
 
-namespace InsertionSort {
-	template <typename T, size_t S>
-	void sort(std::array<T, S> &array)
+template <typename T, size_t S>
+struct InsertionSort {
+	static const std::string name() { return "InsertionSort"; }
+	static void sort(std::array<T, S> &array)
 	{
 		size_t i, j;
 		for (i = 0; i < S; i++)
@@ -18,11 +20,12 @@ namespace InsertionSort {
 			}
 		}
 	}
-}
+};
 
-namespace InsertionSortGuard {
-	template <typename T, size_t S>
-	void sort(std::array<T, S> &array)
+template <typename T, size_t S>
+struct InsertionSortGuard {
+	static const std::string name() { return "InsertionSortGuard"; }
+	static void sort(std::array<T, S> &array)
 	{
 		size_t min = 0;
 		for (size_t i = 0; i < S; i++)
@@ -46,11 +49,12 @@ namespace InsertionSortGuard {
 			}
 		}
 	}
-}
+};
 
-namespace InsertionSortGuardTransformed {
-	template <typename T, size_t S>
-	void sort(std::array<T, S> &array)
+template <typename T, size_t S>
+struct InsertionSortGuardTransformed {
+	static const std::string name() { return "InsertionSortGuardTransformed"; }
+	static void sort(std::array<T, S> &array)
 	{
 		size_t min = 0;
 		for (size_t i = 0; i < S; i++)
@@ -74,4 +78,4 @@ namespace InsertionSortGuardTransformed {
 			}
 		}
 	}
-}
+};

@@ -36,7 +36,7 @@ namespace SorterTest
 
 	// Testing class which generates an already sorted, ascending array
 	template<class T>
-	class AscendingArray : public RandomArray < T >
+	class AscendingArray : public RandomArray<T>
 	{
 	private:
 		void generateArray()
@@ -47,7 +47,7 @@ namespace SorterTest
 
 	// Testing class which generates a descending array
 	template<class T>
-	class DescendingArray : public RandomArray < T >
+	class DescendingArray : public RandomArray<T>
 	{
 	private:
 		void generateArray()
@@ -69,19 +69,19 @@ namespace SorterTest
 	#define SORTER_TEST_CASE(NAMESPACE) \
 	TYPED_TEST(RandomArray, NAMESPACE) \
 	{ \
-		NAMESPACE::sort(*this->arr.get()); \
+		NAMESPACE<typename, ArraySize>::sort(*this->arr.get()); \
 		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
 	} \
 	TYPED_TEST(AscendingArray, NAMESPACE) \
 	{ \
 		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
-		NAMESPACE::sort(*this->arr.get()); \
+		NAMESPACE<typename, ArraySize>::sort(*this->arr.get()); \
 		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
 	} \
 	TYPED_TEST(DescendingArray, NAMESPACE) \
 	{ \
 		EXPECT_FALSE(TestUtil::isSorted(*this->arr.get())); \
-		NAMESPACE::sort(*this->arr.get()); \
+		NAMESPACE<typename, ArraySize>::sort(*this->arr.get()); \
 		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
 	}
 }

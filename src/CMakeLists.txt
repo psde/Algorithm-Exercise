@@ -12,13 +12,20 @@ list(APPEND SRC_TESTS
 )
 SOURCE_GROUP("Tests" FILES ${SRC_TESTS})
 
+# Benchmark sources
+list(APPEND SRC_BENCHMARKS
+	benchmarks/Benchmark.cpp
+	benchmarks/Benchmark.h
+)
+SOURCE_GROUP("Benchmarks" FILES ${SRC_BENCHMARKS})
+
 # Main sources
 list(APPEND SRC_MAIN
 	main.cpp
 )
 SOURCE_GROUP("Main" FILES ${SRC_MAIN})
 
-list(APPEND SOURCES ${SRC_ALGORITHMS} ${SRC_TESTS} ${SRC_MAIN})
+list(APPEND SOURCES ${SRC_ALGORITHMS} ${SRC_TESTS} ${SRC_BENCHMARKS} ${SRC_MAIN})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_executable(${PROJECT_NAME} ${SOURCES})

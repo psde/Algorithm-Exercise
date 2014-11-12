@@ -9,8 +9,8 @@
 namespace SorterTest
 {
 	// Test InsertionSort
-	SORTER_TEST_CASE(InsertionSort)
+	//SORTER_TEST_CASE(InsertionSort)
 
 	// Test InsertionSortGuard
-	SORTER_TEST_CASE(InsertionSortGuard)
+	//SORTER_TEST_CASE(InsertionSortGuard)
 }
