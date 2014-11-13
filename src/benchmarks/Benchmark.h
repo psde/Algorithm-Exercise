@@ -116,7 +116,6 @@ namespace benchmarks
 			delete ascending;
 			delete descending;
 
-
 			std::cout << " done." << std::endl;
 		};		
 
