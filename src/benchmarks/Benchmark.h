@@ -95,6 +95,9 @@ namespace benchmarks
 
 			// Generate futures for all sorters
 			std::vector<std::future<BenchmarkResult>> futures;
+
+			// Due to a VS13 compiler bug a lambda is needed
+			// Due to another VS13 compiler bug 'S' must be defined inside the lambda, otherwise VS13 does not think it is a compile-time constant
 			futures.push_back(std::async(std::launch::async, [&]() { const size_t S = 10000 * pow_struct<2, I - 1>::value; return benchmarkSorter<InsertionSort, S>(random, ascending, descending); }));
 			futures.push_back(std::async(std::launch::async, [&]() { const size_t S = 10000 * pow_struct<2, I - 1>::value; return benchmarkSorter<InsertionSortGuard, S>(random, ascending, descending); }));
 			futures.push_back(std::async(std::launch::async, [&]() { const size_t S = 10000 * pow_struct<2, I - 1>::value; return benchmarkSorter<InsertionSortGuardTransformed, S>(random, ascending, descending); }));
