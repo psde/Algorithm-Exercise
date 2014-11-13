@@ -1,8 +1,11 @@
 #pragma once
 
+#include <iostream>
+#include <fstream>
 #include <chrono>
 #include <unordered_map>
 #include <string>
+#include <future>
 
 #include "tests/TestUtil.h"
 #include "algorithms/insertion_sort.hpp"
@@ -15,10 +18,23 @@ namespace benchmarks
 
 		std::vector<size_t> _sizes;
 
-		using BenchmarkMap = std::unordered_map<std::string, std::vector<std::chrono::milliseconds>>;
+		using BenchmarkTime = std::chrono::milliseconds;
+
+		using BenchmarkMap = std::unordered_map<std::string, std::vector<BenchmarkTime>>;
 		BenchmarkMap _random;
 		BenchmarkMap _ascending;
 		BenchmarkMap _descending;
+
+		struct BenchmarkResult
+		{
+			std::string name;
+			BenchmarkTime random, ascending, descending;
+
+			BenchmarkResult()
+				: name("") {}
+			BenchmarkResult(std::string name, BenchmarkTime random, BenchmarkTime ascending, BenchmarkTime descending)
+				: name(name), random(random), ascending(ascending), descending(descending) {};
+		};
 
 		template<size_t X, size_t Y>
 		struct pow_struct {
@@ -31,38 +47,36 @@ namespace benchmarks
 		};
 
 		template<template <typename, size_t> class F, size_t S>
-		std::chrono::milliseconds benchmarkSorterWithArray(std::array<double, S> *ary)
+		BenchmarkTime benchmarkSorterWithArray(std::array<double, S> *ary)
 		{
-			// Create a copy
+			// Create a copy so we do not modify the original
 			auto tmp = new std::array<double, S>(*ary);
 
-			auto start = std::chrono::steady_clock::now();
+			auto start = std::chrono::high_resolution_clock::now();
 			F<double, S>::sort(*tmp);
-			auto end = std::chrono::steady_clock::now();
+			auto end = std::chrono::high_resolution_clock::now();
 
-			auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+			auto milliseconds = std::chrono::duration_cast<BenchmarkTime>(end - start);
 
 			delete tmp;
 
+			std::cout << ".";
 			return milliseconds;
 		}
 
 		template<template <typename, size_t> class F, size_t S>
-		void benchmarkSorter()
+		BenchmarkResult benchmarkSorter(std::array<double, S> *random, std::array<double, S> *ascending, std::array<double, S> *descending)
 		{
-			auto random = TestUtil::generateRandomArray<double, S>().release();
-			auto ascending = TestUtil::generateAscendingArray<double, S>().release();
-			auto descending = TestUtil::generateDescendingArray<double, S>().release();
+			// Construct a future and launch async
+			// Due to a VS13 compiler bug a lambda is needed
+			auto randomResult(std::async(std::launch::async, [&]() { return benchmarkSorterWithArray<F, S>(random); }));
+			auto ascendingResult(std::async(std::launch::async, [&]() { return benchmarkSorterWithArray<F, S>(ascending); }));
+			auto descendingResult(std::async(std::launch::async, [&]() { return benchmarkSorterWithArray<F, S>(descending); }));
 
-			_random[F<double, S>::name()].push_back(benchmarkSorterWithArray<F, S>(random));
-			_ascending[F<double, S>::name()].push_back(benchmarkSorterWithArray<F, S>(ascending));
-			_descending[F<double, S>::name()].push_back(benchmarkSorterWithArray<F, S>(descending));
+			// Write the result to our BenchmarkResult
+			BenchmarkResult result(F<double, S>::name(), randomResult.get(), ascendingResult.get(), descendingResult.get());
 
-			delete random;
-			delete ascending;
-			delete descending;
-
-			std::cout << ".";
+			return result;
 		}
 
 		template<size_t I>
@@ -70,13 +84,38 @@ namespace benchmarks
 			// Recursion first, so we get ascending sizes
 			benchmarkIteration<I - 1>();
 			
-			const size_t ArraySize = 10000 * pow_struct<2, I - 1>::value;
-			std::cout << "Benchmarking for size = " << ArraySize;
-			_sizes.push_back(ArraySize);
+			const size_t S = 10000 * pow_struct<2, I - 1>::value;
+			std::cout << "Benchmarking for size = " << S;
+			_sizes.push_back(S);
 
-			benchmarkSorter<InsertionSort, ArraySize>();
-			benchmarkSorter<InsertionSortGuard, ArraySize>();
-			benchmarkSorter<InsertionSortGuardTransformed, ArraySize>();
+			// Generate test arrays
+			auto random = TestUtil::generateRandomArray<double, S>().release();
+			auto ascending = TestUtil::generateAscendingArray<double, S>().release();
+			auto descending = TestUtil::generateDescendingArray<double, S>().release();
+
+			// Generate futures for all sorters
+			std::vector<std::future<BenchmarkResult>> futures;
+			futures.push_back(std::async(std::launch::async, [&]() { const size_t S = 10000 * pow_struct<2, I - 1>::value; return benchmarkSorter<InsertionSort, S>(random, ascending, descending); }));
+			futures.push_back(std::async(std::launch::async, [&]() { const size_t S = 10000 * pow_struct<2, I - 1>::value; return benchmarkSorter<InsertionSortGuard, S>(random, ascending, descending); }));
+			futures.push_back(std::async(std::launch::async, [&]() { const size_t S = 10000 * pow_struct<2, I - 1>::value; return benchmarkSorter<InsertionSortGuardTransformed, S>(random, ascending, descending); }));
+
+			// Add results to our map
+			for (auto &future : futures)
+			{
+				BenchmarkResult result = future.get();
+				if (result.name == "")
+					continue;
+
+				_random[result.name].push_back(result.random);
+				_ascending[result.name].push_back(result.ascending);
+				_descending[result.name].push_back(result.descending);
+			}
+
+			// Delete test arrays
+			delete random;
+			delete ascending;
+			delete descending;
+
 
 			std::cout << " done." << std::endl;
 		};		
@@ -90,41 +129,56 @@ namespace benchmarks
 			benchmarkIteration<I>();
 		}
 
-		void printBenchmarkMap(BenchmarkMap &map)
+		void printBenchmarkMap(std::ostream& stream, BenchmarkMap &map)
 		{
 			for (const auto &kv : map)
 			{
-				std::cout << kv.first << ",";
+				stream << kv.first << ",";
 
 				for (const auto &ms : kv.second)
 				{
-					std::cout << ms.count() << ",";
+					stream << ms.count() << ",";
 				}
-				std::cout << std::endl;
+				stream << std::endl;
 			}
 		}
 
 	public:
 		Benchmark()
 		{
-			benchmark<4>();
+			benchmark<5>();
 
 			std::cout << std::endl << "Values:" << std::endl;
-			std::cout << "Sizes,";
+			printResults(std::cout);
+
+			std::cout << std::endl << "Writing to results.csv" << std::endl;
+			std::ofstream fs("results.csv", std::ios::out | std::ios::trunc);
+			if (!fs)
+			{
+				std::cerr << "Could not open file" << std::endl;
+				return;
+			}
+			printResults(fs);
+			fs.close();
+		}
+
+		void printResults(std::ostream& stream)
+		{
+			stream << "Sizes,";
 			for (auto s : _sizes)
 			{
-				std::cout << s << ",";
+				stream << s << ",";
 			}
-			std::cout << std::endl;
+			stream << std::endl;
 
-			std::cout << "Random" << std::endl;
-			printBenchmarkMap(_random);
+			stream << "Random" << std::endl;
+			printBenchmarkMap(stream, _random);
 
-			std::cout << "Ascending" << std::endl;
-			printBenchmarkMap(_ascending);
+			stream << "Ascending" << std::endl;
+			printBenchmarkMap(stream, _ascending);
 
-			std::cout << "Descending" << std::endl;
-			printBenchmarkMap(_descending);
+			stream << "Descending" << std::endl;
+			printBenchmarkMap(stream, _descending);
 		}
 	};
 }
