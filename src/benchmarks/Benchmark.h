@@ -60,7 +60,7 @@ namespace benchmarks
 
 			delete tmp;
 
-			std::cout << ".";
+			std::cout << "." << std::flush;
 			return milliseconds;
 		}
 
@@ -85,7 +85,7 @@ namespace benchmarks
 			benchmarkIteration<I - 1>();
 			
 			const size_t S = 10000 * pow_struct<2, I - 1>::value;
-			std::cout << "Benchmarking for size = " << S;
+			std::cout << "Benchmarking for size = " << S << std::flush;
 			_sizes.push_back(S);
 
 			// Generate test arrays
@@ -118,8 +118,6 @@ namespace benchmarks
 
 			std::cout << " done." << std::endl;
 		}
-
-
 
 		template<size_t I>
 		void benchmark() {
