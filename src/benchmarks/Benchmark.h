@@ -36,6 +36,7 @@ namespace benchmarks
 				: name(name), random(random), ascending(ascending), descending(descending) {};
 		};
 
+
 		template<size_t X, size_t Y>
 		struct pow_struct {
 			static const size_t value = X * pow_struct<X, Y - 1>::value;
@@ -50,16 +51,14 @@ namespace benchmarks
 		BenchmarkTime benchmarkSorterWithArray(std::array<double, S> *ary)
 		{
 			// Create a copy so we do not modify the original
-			auto tmp = new std::array<double, S>(*ary);
+			auto tmp = std::unique_ptr<std::array<double, S>>(new std::array<double, S>(*ary));
 
 			auto start = std::chrono::high_resolution_clock::now();
-			F<double, S>::sort(*tmp);
+			F<double, S>::sort(*tmp.get());
 			auto end = std::chrono::high_resolution_clock::now();
 
 			auto milliseconds = std::chrono::duration_cast<BenchmarkTime>(end - start);
-
-			delete tmp;
-
+			
 			std::cout << "." << std::flush;
 			return milliseconds;
 		}
@@ -67,14 +66,13 @@ namespace benchmarks
 		template<template <typename, size_t> class F, size_t S>
 		BenchmarkResult benchmarkSorter(std::array<double, S> *random, std::array<double, S> *ascending, std::array<double, S> *descending)
 		{
-			// Construct a future and launch async
-			// Due to a VS13 compiler bug a lambda is needed
-			auto randomResult(std::async(std::launch::async, [&]() { return benchmarkSorterWithArray<F, S>(random); }));
-			auto ascendingResult(std::async(std::launch::async, [&]() { return benchmarkSorterWithArray<F, S>(ascending); }));
-			auto descendingResult(std::async(std::launch::async, [&]() { return benchmarkSorterWithArray<F, S>(descending); }));
+			// Benchmark for all array types
+			auto randomResult = benchmarkSorterWithArray<F, S>(random);
+			auto ascendingResult = benchmarkSorterWithArray<F, S>(ascending);
+			auto descendingResult = benchmarkSorterWithArray<F, S>(descending);
 
 			// Write the result to our BenchmarkResult
-			BenchmarkResult result(F<double, S>::name(), randomResult.get(), ascendingResult.get(), descendingResult.get());
+			BenchmarkResult result(F<double, S>::name(), randomResult, ascendingResult, descendingResult);
 
 			return result;
 		}
@@ -89,23 +87,19 @@ namespace benchmarks
 			_sizes.push_back(S);
 
 			// Generate test arrays
-			auto random = TestUtil::generateRandomArray<double, S>().release();
-			auto ascending = TestUtil::generateAscendingArray<double, S>().release();
-			auto descending = TestUtil::generateDescendingArray<double, S>().release();
+			auto random = TestUtil::generateRandomArray<double, S>();
+			auto ascending = TestUtil::generateAscendingArray<double, S>();
+			auto descending = TestUtil::generateDescendingArray<double, S>();
 
-			// Generate futures for all sorters
-			std::vector<std::future<BenchmarkResult>> futures;
-
-			// Due to a VS13 compiler bug a lambda is needed
-			// Due to another VS13 compiler bug 'S' must be defined inside the lambda, otherwise VS13 does not think it is a compile-time constant
-			futures.push_back(std::async(std::launch::async, [&]() { const size_t S = 10000 * pow_struct<2, I - 1>::value; return benchmarkSorter<InsertionSort, S>(random, ascending, descending); }));
-			futures.push_back(std::async(std::launch::async, [&]() { const size_t S = 10000 * pow_struct<2, I - 1>::value; return benchmarkSorter<InsertionSortGuard, S>(random, ascending, descending); }));
-			futures.push_back(std::async(std::launch::async, [&]() { const size_t S = 10000 * pow_struct<2, I - 1>::value; return benchmarkSorter<InsertionSortGuardTransformed, S>(random, ascending, descending); }));
+			// Benchmark sorters
+			std::vector<BenchmarkResult> results;
+			results.push_back(benchmarkSorter<InsertionSort, S>(random.get(), ascending.get(), descending.get()));
+			results.push_back(benchmarkSorter<InsertionSortGuard, S>(random.get(), ascending.get(), descending.get()));
+			results.push_back(benchmarkSorter<InsertionSortGuardTransformed, S>(random.get(), ascending.get(), descending.get()));
 
 			// Add results to our map
-			for (auto &future : futures)
+			for (auto &result : results)
 			{
-				BenchmarkResult result = future.get();
 				if (result.name == "")
 					continue;
 
@@ -113,11 +107,6 @@ namespace benchmarks
 				_ascending[result.name].push_back(result.ascending);
 				_descending[result.name].push_back(result.descending);
 			}
-
-			// Delete test arrays
-			delete random;
-			delete ascending;
-			delete descending;
 
 			std::cout << " done." << std::endl;
 		}
