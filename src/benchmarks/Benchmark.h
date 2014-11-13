@@ -117,11 +117,9 @@ namespace benchmarks
 			delete descending;
 
 			std::cout << " done." << std::endl;
-		};		
+		}
 
-		template<>
-		void benchmarkIteration<0>()
-		{ }
+
 
 		template<size_t I>
 		void benchmark() {
@@ -180,4 +178,8 @@ namespace benchmarks
 			printBenchmarkMap(stream, _descending);
 		}
 	};
+
+	template<>
+	void Benchmark::benchmarkIteration<0>()
+	{ }
 }
