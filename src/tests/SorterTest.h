@@ -69,19 +69,19 @@ namespace SorterTest
 	#define SORTER_TEST_CASE(NAMESPACE) \
 	TYPED_TEST(RandomArray, NAMESPACE) \
 	{ \
-		NAMESPACE<typename, ArraySize>::sort(*this->arr.get()); \
+		NAMESPACE<TypeParam, ArraySize>::sort(*this->arr.get()); \
 		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
 	} \
 	TYPED_TEST(AscendingArray, NAMESPACE) \
 	{ \
 		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
-		NAMESPACE<typename, ArraySize>::sort(*this->arr.get()); \
+		NAMESPACE<TypeParam, ArraySize>::sort(*this->arr.get()); \
 		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
 	} \
 	TYPED_TEST(DescendingArray, NAMESPACE) \
 	{ \
 		EXPECT_FALSE(TestUtil::isSorted(*this->arr.get())); \
-		NAMESPACE<typename, ArraySize>::sort(*this->arr.get()); \
+		NAMESPACE<TypeParam, ArraySize>::sort(*this->arr.get()); \
 		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
 	}
 }
