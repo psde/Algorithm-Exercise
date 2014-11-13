@@ -36,17 +36,6 @@ namespace benchmarks
 				: name(name), random(random), ascending(ascending), descending(descending) {};
 		};
 
-
-		template<size_t X, size_t Y>
-		struct pow_struct {
-			static const size_t value = X * pow_struct<X, Y - 1>::value;
-		};
-
-		template<size_t X>
-		struct pow_struct<X, 0> {
-			static const size_t value = 1;
-		};
-
 		template<template <typename, size_t> class F, size_t S>
 		BenchmarkTime benchmarkSorterWithArray(std::array<double, S> *ary)
 		{
@@ -82,7 +71,7 @@ namespace benchmarks
 			// Recursion first, so we get ascending sizes
 			benchmarkIteration<I - 1>();
 			
-			const size_t S = 10000 * pow_struct<2, I - 1>::value;
+			const size_t S = 10000 * (1 << (I - 1));
 			std::cout << "Benchmarking for size = " << S << std::flush;
 			_sizes.push_back(S);
 
