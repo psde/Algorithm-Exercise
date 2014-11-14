@@ -13,4 +13,7 @@ namespace SorterTest
 
 	// Test InsertionSortGuard
 	SORTER_TEST_CASE(InsertionSortGuard)
+
+	// Test InsertionSortGuardTransformed
+	SORTER_TEST_CASE(InsertionSortGuardTransformed)
 }
