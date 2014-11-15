@@ -5,7 +5,7 @@
 #include <memory>
 #include <functional>
 
-namespace TestUtil
+namespace Tests
 {
 	// Returns 'true' if an array is sorted, false otherwise
 	template<class T, size_t S>

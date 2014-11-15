@@ -14,7 +14,6 @@ SOURCE_GROUP("Tests" FILES ${SRC_TESTS})
 
 # Benchmark sources
 list(APPEND SRC_BENCHMARKS
-	benchmarks/Benchmark.cpp
 	benchmarks/Benchmark.h
 )
 SOURCE_GROUP("Benchmarks" FILES ${SRC_BENCHMARKS})

@@ -10,7 +10,7 @@
 #include "tests/TestUtil.h"
 #include "algorithms/insertion_sort.hpp"
 
-namespace benchmarks
+namespace Benchmarks
 {
 	class Benchmark
 	{
@@ -76,9 +76,9 @@ namespace benchmarks
 			_sizes.push_back(S);
 
 			// Generate test arrays
-			auto random = TestUtil::generateRandomArray<double, S>();
-			auto ascending = TestUtil::generateAscendingArray<double, S>();
-			auto descending = TestUtil::generateDescendingArray<double, S>();
+			auto random = Tests::generateRandomArray<double, S>();
+			auto ascending = Tests::generateAscendingArray<double, S>();
+			auto descending = Tests::generateDescendingArray<double, S>();
 
 			// Benchmark sorters
 			std::vector<BenchmarkResult> results;
@@ -119,25 +119,6 @@ namespace benchmarks
 			}
 		}
 
-	public:
-		Benchmark()
-		{
-			benchmark<5>();
-
-			std::cout << std::endl << "Values:" << std::endl;
-			printResults(std::cout);
-
-			std::cout << std::endl << "Writing to results.csv" << std::endl;
-			std::ofstream fs("results.csv", std::ios::out | std::ios::trunc);
-			if (!fs)
-			{
-				std::cerr << "Could not open file" << std::endl;
-				return;
-			}
-			printResults(fs);
-			fs.close();
-		}
-
 		void printResults(std::ostream& stream)
 		{
 			stream << "Sizes,";
@@ -155,6 +136,25 @@ namespace benchmarks
 
 			stream << "Descending" << std::endl;
 			printBenchmarkMap(stream, _descending);
+		}
+
+	public:
+		Benchmark()
+		{
+			benchmark<0>();
+
+			std::cout << std::endl << "Values:" << std::endl;
+			printResults(std::cout);
+
+			std::cout << std::endl << "Writing to results.csv" << std::endl;
+			std::ofstream fs("results.csv", std::ios::out | std::ios::trunc);
+			if (!fs)
+			{
+				std::cerr << "Could not open file" << std::endl;
+				return;
+			}
+			printResults(fs);
+			fs.close();
 		}
 	};
 

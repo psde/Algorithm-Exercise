@@ -6,7 +6,7 @@
 
 #include "algorithms/insertion_sort.hpp"
 
-namespace SorterTest
+namespace Tests
 {
 	// Test InsertionSort
 	SORTER_TEST_CASE(InsertionSort)

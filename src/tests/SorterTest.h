@@ -9,9 +9,8 @@
 
 #include "gtest/gtest.h"
 
-namespace SorterTest
+namespace Tests
 {
-
 	// Size of all arrays used in testing
 	const unsigned int ArraySize = 1000u;
 
@@ -22,7 +21,7 @@ namespace SorterTest
 	private:
 		virtual void generateArray()
 		{
-			arr = std::move(TestUtil::generateRandomArray<T, ArraySize>());
+			arr = std::move(Tests::generateRandomArray<T, ArraySize>());
 		}
 
 	protected:
@@ -41,7 +40,7 @@ namespace SorterTest
 	private:
 		void generateArray()
 		{
-			this->arr = std::move(TestUtil::generateAscendingArray<T, ArraySize>());
+			this->arr = std::move(Tests::generateAscendingArray<T, ArraySize>());
 		}
 	};
 
@@ -52,36 +51,38 @@ namespace SorterTest
 	private:
 		void generateArray()
 		{
-			this->arr = std::move(TestUtil::generateDescendingArray<T, ArraySize>());
+			this->arr = std::move(Tests::generateDescendingArray<T, ArraySize>());
 		}
 	};
 
 	// All types that are used in testing
-	typedef ::testing::Types<int, float, double> SortingTypes;
-
+	using SortingTypes = ::testing::Types<int, float, double>;
 
 	// Register types for the three test cases
-	TYPED_TEST_CASE(RandomArray, SorterTest::SortingTypes);
-	TYPED_TEST_CASE(AscendingArray, SorterTest::SortingTypes);
-	TYPED_TEST_CASE(DescendingArray, SorterTest::SortingTypes);
+	TYPED_TEST_CASE(RandomArray, Tests::SortingTypes);
+	TYPED_TEST_CASE(AscendingArray, Tests::SortingTypes);
+	TYPED_TEST_CASE(DescendingArray, Tests::SortingTypes);
 
-	// Macro for testing different sorters
-	#define SORTER_TEST_CASE(NAMESPACE) \
-	TYPED_TEST(RandomArray, NAMESPACE) \
-	{ \
-		NAMESPACE<TypeParam, ArraySize>::sort(*this->arr.get()); \
-		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
-	} \
-	TYPED_TEST(AscendingArray, NAMESPACE) \
-	{ \
-		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
-		NAMESPACE<TypeParam, ArraySize>::sort(*this->arr.get()); \
-		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
-	} \
-	TYPED_TEST(DescendingArray, NAMESPACE) \
-	{ \
-		EXPECT_FALSE(TestUtil::isSorted(*this->arr.get())); \
-		NAMESPACE<TypeParam, ArraySize>::sort(*this->arr.get()); \
-		EXPECT_TRUE(TestUtil::isSorted(*this->arr.get())); \
-	}
+
+
+}
+
+// Macro for testing different sorters
+#define SORTER_TEST_CASE(CLASS) \
+TYPED_TEST(RandomArray, CLASS) \
+{ \
+	CLASS<TypeParam, ArraySize>::sort(*this->arr.get()); \
+	EXPECT_TRUE(Tests::isSorted(*this->arr.get())); \
+} \
+TYPED_TEST(AscendingArray, CLASS) \
+{ \
+	EXPECT_TRUE(Tests::isSorted(*this->arr.get())); \
+	CLASS<TypeParam, ArraySize>::sort(*this->arr.get()); \
+	EXPECT_TRUE(Tests::isSorted(*this->arr.get())); \
+} \
+TYPED_TEST(DescendingArray, CLASS) \
+{ \
+	EXPECT_FALSE(Tests::isSorted(*this->arr.get())); \
+	CLASS<TypeParam, ArraySize>::sort(*this->arr.get()); \
+	EXPECT_TRUE(Tests::isSorted(*this->arr.get())); \
 }

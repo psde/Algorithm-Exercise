@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 	int tests = RUN_ALL_TESTS();
 
 	std::cout << std::endl << "Benchmarking:" << std::endl;
-	auto b = benchmarks::Benchmark();
+	auto b = Benchmarks::Benchmark();
 	
 	return tests;
 }
