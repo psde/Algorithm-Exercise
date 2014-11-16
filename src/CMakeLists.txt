@@ -9,14 +9,14 @@ SOURCE_GROUP("Algorithms" FILES ${SRC_ALGORITHMS})
 # Tests sources
 list(APPEND SRC_TESTS
 	tests/SorterTest.cpp
-	tests/SorterTest.h
-	tests/TestUtil.h
+	tests/SorterTest.hpp
+	tests/TestUtil.hpp
 )
 SOURCE_GROUP("Tests" FILES ${SRC_TESTS})
 
 # Benchmark sources
 list(APPEND SRC_BENCHMARKS
-	benchmarks/Benchmark.h
+	benchmarks/Benchmark.hpp
 )
 SOURCE_GROUP("Benchmarks" FILES ${SRC_BENCHMARKS})
 

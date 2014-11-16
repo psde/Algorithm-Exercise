@@ -7,7 +7,7 @@
 #include <string>
 #include <future>
 
-#include "tests/TestUtil.h"
+#include "tests/TestUtil.hpp"
 #include "algorithms/algorithms.hpp"
 
 namespace Benchmarks

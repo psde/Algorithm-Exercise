@@ -4,7 +4,7 @@
 #include <random>
 
 #include "gtest/gtest.h"
-#include "benchmarks/Benchmark.h"
+#include "benchmarks/Benchmark.hpp"
 
 
 int main(int argc, char** argv)

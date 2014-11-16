@@ -5,7 +5,7 @@
 #include <memory>
 #include <functional>
 
-#include "TestUtil.h"
+#include "TestUtil.hpp"
 
 #include "gtest/gtest.h"
 

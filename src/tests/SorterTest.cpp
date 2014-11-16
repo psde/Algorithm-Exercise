@@ -2,7 +2,7 @@
 #include <memory>
 #include <functional>
 
-#include "SorterTest.h"
+#include "SorterTest.hpp"
 
 #include "algorithms/algorithms.hpp"
 
