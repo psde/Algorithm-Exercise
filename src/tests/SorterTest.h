@@ -12,7 +12,7 @@
 namespace Tests
 {
 	// Size of all arrays used in testing
-	const unsigned int ArraySize = 1000u;
+	const unsigned int ArraySize = 10u;
 
 	// Testing class which generates a random array
 	template<class T>

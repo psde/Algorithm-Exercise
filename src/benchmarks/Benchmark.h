@@ -8,7 +8,7 @@
 #include <future>
 
 #include "tests/TestUtil.h"
-#include "algorithms/insertionsort.hpp"
+#include "algorithms/algorithms.hpp"
 
 namespace Benchmarks
 {
