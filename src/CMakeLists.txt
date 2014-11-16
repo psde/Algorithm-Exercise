@@ -1,6 +1,6 @@
 # Algorithms files
 list(APPEND SRC_ALGORITHMS
-	algorithms/insertion_sort.hpp
+	algorithms/insertionsort.hpp
 )
 SOURCE_GROUP("Algorithms" FILES ${SRC_ALGORITHMS})
 

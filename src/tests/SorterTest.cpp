@@ -4,7 +4,7 @@
 
 #include "SorterTest.h"
 
-#include "algorithms/insertion_sort.hpp"
+#include "algorithms/insertionsort.hpp"
 
 namespace Tests
 {
