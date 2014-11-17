@@ -7,6 +7,8 @@
 
 #include "TestUtil.hpp"
 
+#include "algorithms/algorithms.hpp"
+
 #include "gtest/gtest.h"
 
 namespace Tests
@@ -14,12 +16,23 @@ namespace Tests
 	// Size of all arrays used in testing
 	const unsigned int ArraySize = 1000u;
 
+	// All types that are used in testing
+	using SortingTypes = ::testing::Types<int, float, double>;
+
+	// Register types for the three test cases
+	TYPED_TEST_CASE(RandomArray, Tests::SortingTypes);
+	TYPED_TEST_CASE(AscendingArray, Tests::SortingTypes);
+	TYPED_TEST_CASE(DescendingArray, Tests::SortingTypes);
+	TYPED_TEST_CASE(EmptyArray, Tests::SortingTypes);
+	TYPED_TEST_CASE(OneSizedArray, Tests::SortingTypes);
+
 	// Base class for all test fixtures
-	template<class T, size_t Size>
+	template<class T, size_t S>
 	class ArrayTest : public testing::Test
 	{
 	protected:
 		virtual void generateArray() = 0;
+		static const size_t Size = S;
 		std::unique_ptr<std::array<T, Size>> array;
 
 		virtual void SetUp()
@@ -37,6 +50,16 @@ namespace Tests
 		{
 			this->array = std::move(Tests::generateRandomArray<T, ArraySize>());
 		}
+
+		void test(std::function<void(std::array<T, RandomArray::Size>&)> f)
+		{
+			for(unsigned int i = 0; i <= 25; i++)
+			{
+				this->generateArray();
+				f(*this->array.get());
+				EXPECT_TRUE(Tests::isSorted(*this->array.get()));
+			}
+		}
 	};
 
 	// Testing class which generates an already sorted, ascending array
@@ -47,6 +70,13 @@ namespace Tests
 		void generateArray()
 		{
 			this->array = std::move(Tests::generateAscendingArray<T, ArraySize>());
+		}
+
+		void test(std::function<void(std::array<T, AscendingArray::Size>&)> f)
+		{
+			EXPECT_TRUE(Tests::isSorted(*this->array.get()));
+			f(*this->array.get());
+			EXPECT_TRUE(Tests::isSorted(*this->array.get()));
 		}
 	};
 
@@ -59,6 +89,13 @@ namespace Tests
 		{
 			this->array = std::move(Tests::generateDescendingArray<T, ArraySize>());
 		}
+
+		void test(std::function<void(std::array<T, DescendingArray::Size>&)> f)
+		{
+			EXPECT_FALSE(Tests::isSorted(*this->array.get()));
+			f(*this->array.get());
+			EXPECT_TRUE(Tests::isSorted(*this->array.get()));
+		}
 	};
 
 	template<class T>
@@ -68,6 +105,12 @@ namespace Tests
 		void generateArray()
 		{
 			this->array.reset(new std::array<T, 0>());
+		}
+
+		void test(std::function<void(std::array<T, EmptyArray::Size>&)> f)
+		{
+			f(*this->array.get());
+			EXPECT_TRUE(Tests::isSorted(*this->array.get()));
 		}
 	};
 
@@ -79,49 +122,34 @@ namespace Tests
 		{
 			this->array = std::move(Tests::generateRandomArray<T, 1>());
 		}
+
+		void test(std::function<void(std::array<T, OneSizedArray::Size>&)> f)
+		{
+			f(*this->array.get());
+			EXPECT_TRUE(Tests::isSorted(*this->array.get()));
+		}
 	};
-
-	// All types that are used in testing
-	using SortingTypes = ::testing::Types<int, float, double>;
-
-	// Register types for the three test cases
-	TYPED_TEST_CASE(RandomArray, Tests::SortingTypes);
-	TYPED_TEST_CASE(AscendingArray, Tests::SortingTypes);
-	TYPED_TEST_CASE(DescendingArray, Tests::SortingTypes);
-	TYPED_TEST_CASE(EmptyArray, Tests::SortingTypes);
-	TYPED_TEST_CASE(OneSizedArray, Tests::SortingTypes);
 }
 
 // Macro for testing different sorters
 #define SORTER_TEST_CASE(CLASS) \
 TYPED_TEST(RandomArray, CLASS) \
 { \
-	for(unsigned int i = 0; i <= 25; i++) \
-	{ \
-		this->generateArray(); \
-		CLASS<TypeParam, ArraySize>::sort(*this->array.get()); \
-		EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
-	} \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
 } \
 TYPED_TEST(AscendingArray, CLASS) \
 { \
-	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
-	CLASS<TypeParam, ArraySize>::sort(*this->array.get()); \
-	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
 } \
 TYPED_TEST(DescendingArray, CLASS) \
 { \
-	EXPECT_FALSE(Tests::isSorted(*this->array.get())); \
-	CLASS<TypeParam, ArraySize>::sort(*this->array.get()); \
-	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
 } \
 TYPED_TEST(EmptyArray, CLASS) \
 { \
-	CLASS<TypeParam, 0>::sort(*this->array.get()); \
-	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
 } \
 TYPED_TEST(OneSizedArray, CLASS) \
 { \
-	CLASS<TypeParam, 1>::sort(*this->array.get()); \
-	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
 }

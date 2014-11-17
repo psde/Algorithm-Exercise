@@ -7,7 +7,7 @@ template <typename T, size_t S>
 struct QuickSort {
 	static const std::string name() { return "QuickSort"; }
 
-	static void sort(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
 		size_t count = rightBound - leftBound;
 
@@ -41,10 +41,10 @@ struct QuickSort {
 		}
 
 		if (leftBound < right)
-			sort(array, leftBound, right);
+			sortInternal(array, leftBound, right);
 
 		if (left < rightBound)
-			sort(array, left, rightBound);
+			sortInternal(array, left, rightBound);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -52,7 +52,7 @@ struct QuickSort {
 		if(S <= 1)
 			return;
 
-		sort(array, 0, S - 1);
+		sortInternal(array, 0, S - 1);
 	}
 };
 

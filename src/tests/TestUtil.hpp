@@ -26,7 +26,7 @@ namespace Tests
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
-		std::uniform_real_distribution<> f_rand(0.f, 10000.f);
+		std::uniform_real_distribution<> f_rand(-S, S);
 
 		std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
 
