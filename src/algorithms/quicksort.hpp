@@ -50,6 +50,9 @@ struct QuickSort {
 
 	static void sort(std::array<T, S> &array)
 	{
+		if(S <= 1)
+			return;
+
 		sort(array, 0, S - 1);
 	}
 };

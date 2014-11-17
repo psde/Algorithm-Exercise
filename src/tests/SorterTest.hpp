@@ -12,20 +12,15 @@
 namespace Tests
 {
 	// Size of all arrays used in testing
-	const unsigned int ArraySize = 10u;
+	const unsigned int ArraySize = 1000u;
 
-	// Testing class which generates a random array
-	template<class T>
-	class RandomArray : public testing::Test
+	// Base class for all test fixtures
+	template<class T, size_t Size>
+	class ArrayTest : public testing::Test
 	{
-	private:
-		virtual void generateArray()
-		{
-			arr = std::move(Tests::generateRandomArray<T, ArraySize>());
-		}
-
 	protected:
-		std::unique_ptr<std::array<T, ArraySize>> arr;
+		virtual void generateArray() = 0;
+		std::unique_ptr<std::array<T, Size>> array;
 
 		virtual void SetUp()
 		{
@@ -33,25 +28,56 @@ namespace Tests
 		}
 	};
 
+	// Testing class which generates a random array
+	template<class T>
+	class RandomArray : public ArrayTest<T, ArraySize>
+	{
+	protected:
+		virtual void generateArray()
+		{
+			this->array = std::move(Tests::generateRandomArray<T, ArraySize>());
+		}
+	};
+
 	// Testing class which generates an already sorted, ascending array
 	template<class T>
-	class AscendingArray : public RandomArray<T>
+	class AscendingArray : public ArrayTest<T, ArraySize>
 	{
-	private:
+	protected:
 		void generateArray()
 		{
-			this->arr = std::move(Tests::generateAscendingArray<T, ArraySize>());
+			this->array = std::move(Tests::generateAscendingArray<T, ArraySize>());
 		}
 	};
 
 	// Testing class which generates a descending array
 	template<class T>
-	class DescendingArray : public RandomArray<T>
+	class DescendingArray : public ArrayTest<T, ArraySize>
 	{
-	private:
+	protected:
 		void generateArray()
 		{
-			this->arr = std::move(Tests::generateDescendingArray<T, ArraySize>());
+			this->array = std::move(Tests::generateDescendingArray<T, ArraySize>());
+		}
+	};
+
+	template<class T>
+	class EmptyArray : public ArrayTest<T, 0>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array.reset(new std::array<T, 0>());
+		}
+	};
+
+	template<class T>
+	class OneSizedArray : public ArrayTest<T, 1>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::move(Tests::generateRandomArray<T, 1>());
 		}
 	};
 
@@ -62,27 +88,40 @@ namespace Tests
 	TYPED_TEST_CASE(RandomArray, Tests::SortingTypes);
 	TYPED_TEST_CASE(AscendingArray, Tests::SortingTypes);
 	TYPED_TEST_CASE(DescendingArray, Tests::SortingTypes);
-
-
-
+	TYPED_TEST_CASE(EmptyArray, Tests::SortingTypes);
+	TYPED_TEST_CASE(OneSizedArray, Tests::SortingTypes);
 }
 
 // Macro for testing different sorters
 #define SORTER_TEST_CASE(CLASS) \
 TYPED_TEST(RandomArray, CLASS) \
 { \
-	CLASS<TypeParam, ArraySize>::sort(*this->arr.get()); \
-	EXPECT_TRUE(Tests::isSorted(*this->arr.get())); \
+	for(unsigned int i = 0; i <= 25; i++) \
+	{ \
+		this->generateArray(); \
+		CLASS<TypeParam, ArraySize>::sort(*this->array.get()); \
+		EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
+	} \
 } \
 TYPED_TEST(AscendingArray, CLASS) \
 { \
-	EXPECT_TRUE(Tests::isSorted(*this->arr.get())); \
-	CLASS<TypeParam, ArraySize>::sort(*this->arr.get()); \
-	EXPECT_TRUE(Tests::isSorted(*this->arr.get())); \
+	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
+	CLASS<TypeParam, ArraySize>::sort(*this->array.get()); \
+	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
 } \
 TYPED_TEST(DescendingArray, CLASS) \
 { \
-	EXPECT_FALSE(Tests::isSorted(*this->arr.get())); \
-	CLASS<TypeParam, ArraySize>::sort(*this->arr.get()); \
-	EXPECT_TRUE(Tests::isSorted(*this->arr.get())); \
+	EXPECT_FALSE(Tests::isSorted(*this->array.get())); \
+	CLASS<TypeParam, ArraySize>::sort(*this->array.get()); \
+	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
+} \
+TYPED_TEST(EmptyArray, CLASS) \
+{ \
+	CLASS<TypeParam, 0>::sort(*this->array.get()); \
+	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
+} \
+TYPED_TEST(OneSizedArray, CLASS) \
+{ \
+	CLASS<TypeParam, 1>::sort(*this->array.get()); \
+	EXPECT_TRUE(Tests::isSorted(*this->array.get())); \
 }
