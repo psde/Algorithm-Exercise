@@ -9,10 +9,10 @@ struct ShellSort {
 
 	static void sort(std::array<T, S> &array)
 	{
-		static const int gaps[] = { 1705, 701, 301, 132, 57, 23, 10, 4, 1 };
+		static const size_t gaps[] = { 1705, 701, 301, 132, 57, 23, 10, 4, 1 };
 		
-		int gapIndex = 0;
-		int i = 0;
+		size_t gapIndex = 0;
+		size_t i = 0;
 		for (auto gap : gaps)
 		{
 			if (S > gap)
@@ -28,7 +28,7 @@ struct ShellSort {
 		{
 			sorted = true;
 			int st = 0;
-			for (int x = gaps[gapIndex]; x < S; x += gaps[gapIndex])
+			for (size_t x = gaps[gapIndex]; x < S; x += gaps[gapIndex])
 			{
 				if (array[st] > array[x])
 				{

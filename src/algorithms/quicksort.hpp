@@ -40,7 +40,6 @@ struct QuickSort {
 			}
 		}
 
-
 		if (leftBound < right)
 			sort(array, leftBound, right);
 
