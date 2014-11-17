@@ -15,6 +15,7 @@ namespace Benchmarks
 	class Benchmark
 	{
 	private:
+		const unsigned int Cycles = 5;
 
 		std::vector<size_t> _sizes;
 
@@ -27,42 +28,51 @@ namespace Benchmarks
 
 		struct BenchmarkResult
 		{
-			std::string name;
 			BenchmarkTime random, ascending, descending;
 
 			BenchmarkResult()
-				: name("") {}
-			BenchmarkResult(std::string name, BenchmarkTime random, BenchmarkTime ascending, BenchmarkTime descending)
-				: name(name), random(random), ascending(ascending), descending(descending) {};
+				: random(0), ascending(0), descending(0) {}
+			BenchmarkResult(BenchmarkTime random, BenchmarkTime ascending, BenchmarkTime descending)
+				: random(random), ascending(ascending), descending(descending) {};
+
+			BenchmarkResult& operator+=(const BenchmarkResult &other)
+			{
+				random += other.random;
+				ascending += other.ascending;
+				descending += other.descending;
+				return *this;
+			}
 		};
 
-		template<template <typename, size_t> class F, size_t S>
-		BenchmarkTime benchmarkSorterWithArray(std::array<double, S> *ary)
+		template<size_t S>
+		BenchmarkTime benchmarkSorterWithArray(std::function<void(std::array<double, S>&)> f, std::array<double, S> *ary)
 		{
 			// Create a copy so we do not modify the original
 			auto tmp = std::unique_ptr<std::array<double, S>>(new std::array<double, S>(*ary));
 
+			auto a = tmp.get();
 			auto start = std::chrono::high_resolution_clock::now();
-			F<double, S>::sort(*tmp.get());
+			f(*a);
 			auto end = std::chrono::high_resolution_clock::now();
 
 			auto milliseconds = std::chrono::duration_cast<BenchmarkTime>(end - start);
 			
-			std::cout << "." << std::flush;
 			return milliseconds;
 		}
 
-		template<template <typename, size_t> class F, size_t S>
-		BenchmarkResult benchmarkSorter(std::array<double, S> *random, std::array<double, S> *ascending, std::array<double, S> *descending)
+		template<size_t S>
+		BenchmarkResult benchmarkSorter(std::function<void(std::array<double, S>&)> f,
+			std::array<double, S> *random, std::array<double, S> *ascending, std::array<double, S> *descending)
 		{
 			// Benchmark for all array types
-			auto randomResult = benchmarkSorterWithArray<F, S>(random);
-			auto ascendingResult = benchmarkSorterWithArray<F, S>(ascending);
-			auto descendingResult = benchmarkSorterWithArray<F, S>(descending);
+			auto randomResult = benchmarkSorterWithArray<S>(f, random);
+			auto ascendingResult = benchmarkSorterWithArray<S>(f, ascending);
+			auto descendingResult = benchmarkSorterWithArray<S>(f, descending);
 
 			// Write the result to our BenchmarkResult
-			BenchmarkResult result(F<double, S>::name(), randomResult, ascendingResult, descendingResult);
+			BenchmarkResult result(randomResult, ascendingResult, descendingResult);
 
+			std::cout << "." << std::flush;
 			return result;
 		}
 
@@ -75,26 +85,35 @@ namespace Benchmarks
 			std::cout << "Benchmarking for size = " << S << std::flush;
 			_sizes.push_back(S);
 
-			// Generate test arrays
-			auto random = Tests::generateRandomArray<double, S>();
+			std::vector<std::pair<std::string, std::function<void(std::array<double, S>&)>>> functions { 
+				{"InsertionSort", InsertionSort<double, S>::sort },
+				{"InsertionSortGuard", InsertionSortGuard<double, S>::sort },
+				{"InsertionSortGuardTransformed", InsertionSortGuardTransformed<double, S>::sort }
+			};
+
+			std::unordered_map<std::string, BenchmarkResult> results;
+
+			// Generate ascending and descending arrays only once
 			auto ascending = Tests::generateAscendingArray<double, S>();
 			auto descending = Tests::generateDescendingArray<double, S>();
-
-			// Benchmark sorters
-			std::vector<BenchmarkResult> results;
-			results.push_back(benchmarkSorter<InsertionSort, S>(random.get(), ascending.get(), descending.get()));
-			results.push_back(benchmarkSorter<InsertionSortGuard, S>(random.get(), ascending.get(), descending.get()));
-			results.push_back(benchmarkSorter<InsertionSortGuardTransformed, S>(random.get(), ascending.get(), descending.get()));
-
-			// Add results to our map
-			for (auto &result : results)
+			for (unsigned int i = 0; i < Cycles; i++)
 			{
-				if (result.name == "")
-					continue;
+				/// Generate random array every cycle
+				auto random = Tests::generateRandomArray<double, S>();
 
-				_random[result.name].push_back(result.random);
-				_ascending[result.name].push_back(result.ascending);
-				_descending[result.name].push_back(result.descending);
+				for (auto &function : functions)
+				{
+					auto func = function.second;
+					results[function.first] += benchmarkSorter<S>(func, random.get(), ascending.get(), descending.get());
+				}
+			}
+
+			for (auto &kv : results)
+			{
+				auto result = kv.second;
+				_random[kv.first].push_back(result.random / Cycles);
+				_ascending[kv.first].push_back(result.ascending / Cycles);
+				_descending[kv.first].push_back(result.descending / Cycles);
 			}
 
 			std::cout << " done." << std::endl;
@@ -141,7 +160,7 @@ namespace Benchmarks
 	public:
 		Benchmark()
 		{
-			benchmark<0>();
+			benchmark<4>();
 
 			std::cout << std::endl << "Values:" << std::endl;
 			printResults(std::cout);
