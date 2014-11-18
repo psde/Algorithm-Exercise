@@ -26,13 +26,13 @@ namespace Tests
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
-		std::uniform_real_distribution<> f_rand(-S, S);
+		std::uniform_real_distribution<> f_rand(0, static_cast<float>(S) * 2.f);
 
 		std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
 
 		for (size_t i = 0; i < S; ++i)
 		{
-			arr->operator[](i) = static_cast<T>(f_rand(gen));
+			arr->operator[](i) = static_cast<T>(static_cast<float>(S) - f_rand(gen));
 		}
 
 		return std::move(arr);
