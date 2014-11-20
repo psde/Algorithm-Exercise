@@ -19,6 +19,12 @@ namespace Benchmarks
 
 		std::vector<size_t> _sizes;
 
+		template<size_t S>
+		using SorterFunction = std::pair<std::string, std::function<void(std::array<double, S>&)>>;
+
+		template<size_t S>
+		using SorterVector = std::vector<SorterFunction<S>>;
+
 		using BenchmarkTime = std::chrono::milliseconds;
 
 		using BenchmarkMap = std::unordered_map<std::string, std::vector<BenchmarkTime>>;
@@ -76,20 +82,37 @@ namespace Benchmarks
 			return result;
 		}
 
+		template<size_t S>
+		void buildFunctions(SorterVector<S>&)
+		{ }
+
+		template<size_t S, template <typename, size_t> class F, template <typename, size_t> class... args>
+		void buildFunctions(SorterVector<S>& functions)
+		{
+			functions.push_back({ F<double, S>::name(), F<double, S>::sort });
+			buildFunctions<S, args...>(functions);
+		}
+
+		template<size_t S, template <typename, size_t> class... args>
+		SorterVector<S> buildFunctions()
+		{
+			auto functions = SorterVector<S>();
+			buildFunctions<S, args...>(functions);
+			return functions;
+		}
+
 		template<size_t I>
 		void benchmarkIteration() {
 			// Recursion first, so we get ascending sizes
 			benchmarkIteration<I - 1>();
-			
+
 			const size_t S = 10000 * (1 << (I - 1));
 			std::cout << "Benchmarking for size = " << S << std::flush;
 			_sizes.push_back(S);
 
-			std::vector<std::pair<std::string, std::function<void(std::array<double, S>&)>>> functions { 
-				{"InsertionSort", InsertionSort<double, S>::sort },
-				{"InsertionSortGuard", InsertionSortGuard<double, S>::sort },
-				{"InsertionSortGuardTransformed", InsertionSortGuardTransformed<double, S>::sort }
-			};
+			auto functions = buildFunctions<S,
+				InsertionSort, InsertionSortGuard, InsertionSortGuardTransformed,
+				QuickSort, ShellSort, MergeSort>();
 
 			std::unordered_map<std::string, BenchmarkResult> results;
 
