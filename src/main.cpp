@@ -4,8 +4,10 @@
 #include <random>
 
 #include "gtest/gtest.h"
-#include "benchmarks/Benchmark.hpp"
 
+#include "algorithms/algorithms.hpp"
+#include "tests/TestUtil.hpp"
+#include "benchmarks/Benchmark.hpp"
 
 int main(int argc, char** argv)
 {
