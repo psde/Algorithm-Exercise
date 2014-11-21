@@ -14,7 +14,9 @@ namespace Tests
 
 	SORTER_TEST_CASE(InsertionSortGuardTransformed)
 
-	SORTER_TEST_CASE(MergeSort)
+	SORTER_TEST_CASE(MergeSortTopDown)
+
+	SORTER_TEST_CASE(MergeSortBottomUp)
 
 	SORTER_TEST_CASE(QuickSort)
 

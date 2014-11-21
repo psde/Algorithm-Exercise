@@ -6,8 +6,8 @@
 #include <iostream>
 
 template <typename T, size_t S>
-struct MergeSort {
-	static const std::string name() { return "MergeSort"; }
+struct MergeSortTopDown {
+	static const std::string name() { return "MergeSortTopDown"; }
 
 	static void merge(std::array<T, S> &array, size_t leftStart, size_t leftEnd, size_t rightStart, size_t rightEnd)
 	{
@@ -19,9 +19,9 @@ struct MergeSort {
 		auto left = std::vector<T>(leftLength);
 		auto right = std::vector<T>(rightLength);
 
-		auto arrayIterator = array.begin();
-		auto leftIterator = left.begin();
-		auto rightIterator = right.begin();
+		typename std::array<T,S>::iterator arrayIterator;
+		typename std::vector<T>::iterator leftIterator;
+		typename std::vector<T>::iterator rightIterator;
 
 		// Copy into temp lists
 		std::copy(array.begin() + leftStart, array.begin() + leftEnd, left.begin());
@@ -79,3 +79,46 @@ struct MergeSort {
 	}
 };
 
+template <typename T, size_t S>
+struct MergeSortBottomUp {
+	static const std::string name() { return "MergeSortBottomUp"; }
+
+	static void merge(std::array<T, S> &array, std::array<T, S> &list, 
+		size_t left, size_t right, size_t end)
+	{
+		auto i0 = left;
+		auto i1 = right;
+
+		for(auto j = left; j != end; j++)
+		{
+			if (i0 < right && (i1 >= end || array[i0] <= array[i1]))
+			{
+				list[j] = array[i0];
+				i0 = i0 + 1;
+			}
+			else
+			{
+				list[j] = array[i1];
+				i1 = i1 + 1;
+			}
+		}
+	}
+
+	static void sort(std::array<T, S> &array)
+	{
+		if(S <= 1)
+			return;
+
+		auto list = std::array<T,S>(array);
+
+		for(size_t width = 1; width < S; width = 2 * width)
+		{
+			for(size_t i = 0; i < S; i = i + 2 * width)
+			{
+				merge(array, list, i, std::min(i+width, S), std::min(i+2*width, S));
+			}
+
+			std::copy(list.begin(), list.end(), array.begin());
+		}
+	}
+};
