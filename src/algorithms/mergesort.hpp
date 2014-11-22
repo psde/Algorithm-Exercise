@@ -85,14 +85,13 @@ struct MergeSortBottomUp {
 	static const std::string name() { return "MergeSortBottomUp"; }
 
 	static void merge(std::array<T, S> &array, std::array<T, S> &tmp,
-		size_t leftStart, size_t rightStart, size_t end)
+		size_t left, size_t middle, size_t end)
 	{
-		auto left = leftStart;
-		auto right = rightStart;
+		auto right = middle;
 
-		for(auto j = leftStart; j != end; j++)
+		for(auto j = left; j != end; j++)
 		{
-			if (left < rightStart && (right >= end || array[left] <= array[right]))
+			if (left < middle && (right >= end || array[left] <= array[right]))
 			{
 				tmp[j] = array[left];
 				left = left + 1;
