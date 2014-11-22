@@ -183,7 +183,7 @@ namespace Benchmarks
 	public:
 		Benchmark()
 		{
-			benchmark<0>();
+			benchmark<2>();
 
 			std::cout << std::endl << "Values:" << std::endl;
 			printResults(std::cout);

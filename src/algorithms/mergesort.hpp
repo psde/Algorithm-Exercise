@@ -9,8 +9,10 @@ template <typename T, size_t S>
 struct MergeSortTopDown {
 	static const std::string name() { return "MergeSortTopDown"; }
 
-	static void merge(std::array<T, S> &array, size_t leftStart, size_t leftEnd, size_t rightStart, size_t rightEnd)
+	static void merge(std::array<T, S> &array, size_t leftStart, size_t rightStart, size_t rightEnd)
 	{
+		size_t leftEnd = rightStart;
+
 		// temp list size
 		size_t leftLength = leftEnd - leftStart;
 		size_t rightLength = rightEnd - rightStart;
@@ -28,11 +30,11 @@ struct MergeSortTopDown {
 		std::copy(array.begin() + rightStart, array.begin() + rightEnd, right.begin());
 
 		// Merge values into array
-		for(arrayIterator = array.begin() + leftStart, leftIterator = left.begin(), 
-			rightIterator = right.begin();
+		for(arrayIterator = array.begin() + leftStart, leftIterator = left.begin(), rightIterator = right.begin();
 			leftIterator != left.end() && rightIterator != right.end();
 			arrayIterator++)
 		{
+			// Maybe use std::swap?
 			auto& arrayElem = *arrayIterator;
 			auto leftElem = *leftIterator;
 			auto rightElem = *rightIterator;
@@ -60,14 +62,13 @@ struct MergeSortTopDown {
 			return;
 
 		const size_t leftStart = left;
-		const size_t leftEnd = (left+right) / 2;
-		const size_t rightStart = leftEnd;
+		const size_t rightStart = (left+right) / 2;
 		const size_t rightEnd = right;
 
-		mergesort(array, leftStart, leftEnd);
+		mergesort(array, leftStart, rightStart);
 		mergesort(array, rightStart, rightEnd);
 
-		merge(array, leftStart, leftEnd, rightStart, rightEnd);
+		merge(array, leftStart, rightStart, rightEnd);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -83,23 +84,23 @@ template <typename T, size_t S>
 struct MergeSortBottomUp {
 	static const std::string name() { return "MergeSortBottomUp"; }
 
-	static void merge(std::array<T, S> &array, std::array<T, S> &list, 
-		size_t left, size_t right, size_t end)
+	static void merge(std::array<T, S> &array, std::array<T, S> &tmp,
+		size_t leftStart, size_t rightStart, size_t end)
 	{
-		auto i0 = left;
-		auto i1 = right;
+		auto left = leftStart;
+		auto right = rightStart;
 
-		for(auto j = left; j != end; j++)
+		for(auto j = leftStart; j != end; j++)
 		{
-			if (i0 < right && (i1 >= end || array[i0] <= array[i1]))
+			if (left < rightStart && (right >= end || array[left] <= array[right]))
 			{
-				list[j] = array[i0];
-				i0 = i0 + 1;
+				tmp[j] = array[left];
+				left = left + 1;
 			}
 			else
 			{
-				list[j] = array[i1];
-				i1 = i1 + 1;
+				tmp[j] = array[right];
+				right = right + 1;
 			}
 		}
 	}
@@ -109,16 +110,16 @@ struct MergeSortBottomUp {
 		if(S <= 1)
 			return;
 
-		auto list = std::array<T,S>(array);
+		auto tmp = std::array<T,S>(array);
 
 		for(size_t width = 1; width < S; width = 2 * width)
 		{
 			for(size_t i = 0; i < S; i = i + 2 * width)
 			{
-				merge(array, list, i, std::min(i+width, S), std::min(i+2*width, S));
+				merge(array, tmp, i, std::min(i+width, S), std::min(i+2*width, S));
 			}
 
-			std::copy(list.begin(), list.end(), array.begin());
+			std::copy(tmp.begin(), tmp.end(), array.begin());
 		}
 	}
 };

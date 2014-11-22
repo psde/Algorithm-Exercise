@@ -8,17 +8,18 @@
 
 namespace Tests
 {
+	// InsertionSort
 	SORTER_TEST_CASE(InsertionSort)
-
 	SORTER_TEST_CASE(InsertionSortGuard)
-
 	SORTER_TEST_CASE(InsertionSortGuardTransformed)
 
+	// MergeSort
 	SORTER_TEST_CASE(MergeSortTopDown)
-
 	SORTER_TEST_CASE(MergeSortBottomUp)
 
+	// QuickSort
 	SORTER_TEST_CASE(QuickSort)
 
+	// ShellSort
 	SORTER_TEST_CASE(ShellSort)
 }
