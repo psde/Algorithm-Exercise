@@ -122,3 +122,74 @@ struct MergeSortBottomUp {
 		}
 	}
 };
+
+
+template <typename T, size_t S>
+struct MergeSortNatural {
+	static const std::string name() { return "MergeSortNatural"; }
+
+	static void merge(std::array<T, S> &array, std::array<T, S> &tmp,
+		size_t left, size_t middle, size_t end)
+	{
+		auto right = middle;
+
+		for(auto j = left; j != end; j++)
+		{
+			if (left < middle && (right >= end || array[left] <= array[right]))
+			{
+				tmp[j] = array[left];
+				left = left + 1;
+			}
+			else
+			{
+				tmp[j] = array[right];
+				right = right + 1;
+			}
+		}
+		
+		std::copy(tmp.begin() + left, tmp.begin() + right, array.begin() + left);
+	}
+
+	static void sort(std::array<T, S> &array)
+	{
+		if(S <= 1)
+			return;
+
+		auto tmp = std::array<T,S>(array);
+
+		int left = 0;
+		int right = S - 1;
+		bool sorted = false;
+		int l = 0;
+		int r = right;
+
+		do {
+			sorted = true;
+			left = 0;
+
+			while (left < right) 
+			{
+				l = left;
+				while (l < right && array[l] <= array[l + 1]) 
+				{
+					l++;
+				}
+
+				r = l + 1;
+
+				while (r == right - 1 || (r < right && array[r] <= array[r + 1]))
+				{
+					r++;
+				}
+
+				if (r <= right) 
+				{
+					merge(array, tmp, left, l, r);
+					sorted = false;
+				}
+
+				left = r + 1;
+			}
+		} while (!sorted);
+	}
+};

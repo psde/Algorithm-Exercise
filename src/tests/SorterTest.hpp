@@ -14,7 +14,7 @@
 namespace Tests
 {
 	// Size of all arrays used in testing
-	const unsigned int ArraySize = 100u;
+	const unsigned int ArraySize = 1000u;
 
 	// All types that are used in testing
 	using SortingTypes = ::testing::Types<int, float, double>;

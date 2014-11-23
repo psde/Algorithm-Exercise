@@ -16,6 +16,7 @@ namespace Tests
 	// MergeSort
 	SORTER_TEST_CASE(MergeSortTopDown)
 	SORTER_TEST_CASE(MergeSortBottomUp)
+	SORTER_TEST_CASE(MergeSortNatural)
 
 	// QuickSort
 	SORTER_TEST_CASE(QuickSort)

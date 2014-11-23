@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <map>
 #include <unordered_map>
 #include <string>
 #include <future>
@@ -27,7 +28,7 @@ namespace Benchmarks
 
 		using BenchmarkTime = std::chrono::milliseconds;
 
-		using BenchmarkMap = std::unordered_map<std::string, std::vector<BenchmarkTime>>;
+		using BenchmarkMap = std::map<std::string, std::vector<BenchmarkTime>>;
 		BenchmarkMap _random;
 		BenchmarkMap _ascending;
 		BenchmarkMap _descending;
@@ -112,7 +113,7 @@ namespace Benchmarks
 
 			auto functions = buildFunctions<S,
 				InsertionSort, InsertionSortGuard, InsertionSortGuardTransformed,
-				QuickSort, ShellSort, MergeSortTopDown, MergeSortBottomUp>();
+				QuickSort, ShellSort, MergeSortTopDown, MergeSortBottomUp, MergeSortNatural>();
 
 			std::unordered_map<std::string, BenchmarkResult> results;
 
@@ -183,7 +184,7 @@ namespace Benchmarks
 	public:
 		Benchmark()
 		{
-			benchmark<2>();
+			benchmark<0>();
 
 			std::cout << std::endl << "Values:" << std::endl;
 			printResults(std::cout);
