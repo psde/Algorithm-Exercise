@@ -157,11 +157,11 @@ struct MergeSortNatural {
 
 		auto tmp = std::array<T,S>(array);
 
-		int left = 0;
-		int right = S - 1;
+		size_t left = 0;
+		size_t right = S - 1;
 		bool sorted = false;
-		int l = 0;
-		int r = right;
+		size_t l = 0;
+		size_t r = right;
 
 		do {
 			sorted = true;
