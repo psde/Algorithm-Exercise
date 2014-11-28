@@ -4,6 +4,8 @@
 #include <random>
 #include <memory>
 #include <functional>
+#include <string>
+#include <sstream>
 
 namespace Tests
 {
@@ -22,45 +24,117 @@ namespace Tests
 	}
 
 	template<typename T, size_t S>
-	std::unique_ptr<std::array<T, S>> generateRandomArray()
+	struct TestArrays
 	{
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_real_distribution<> f_rand(0, static_cast<float>(S) * 2.f);
-
-		std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
-
-		for (size_t i = 0; i < S; ++i)
+		static std::unique_ptr<std::array<T, S>> generateRandomArray()
 		{
-			arr->operator[](i) = static_cast<T>(static_cast<float>(S) - f_rand(gen));
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<> f_rand(0, static_cast<float>(S)* 2.f);
+
+			std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
+
+			for (size_t i = 0; i < S; ++i)
+			{
+				arr->operator[](i) = static_cast<T>(static_cast<float>(S)-f_rand(gen));
+			}
+
+			return std::move(arr);
 		}
 
-		return std::move(arr);
-	}
-
-	template<typename T, size_t S>
-	std::unique_ptr<std::array<T, S>> generateAscendingArray()
-	{
-		std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
-
-		for (size_t i = 0; i < S; ++i)
+		static std::unique_ptr<std::array<T, S>> generateAscendingArray()
 		{
-			arr->operator[](i) = static_cast<T>(i);
+			std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
+
+			for (size_t i = 0; i < S; ++i)
+			{
+				arr->operator[](i) = static_cast<T>(i);
+			}
+
+			return std::move(arr);
 		}
 
-		return std::move(arr);
-	}
-
-	template<typename T, size_t S>
-	std::unique_ptr<std::array<T, S>> generateDescendingArray()
-	{
-		std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
-
-		for (size_t i = 0; i < S; ++i)
+		static std::unique_ptr<std::array<T, S>> generateDescendingArray()
 		{
-			arr->operator[](i) = static_cast<T>(S - i);
+			std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
+
+			for (size_t i = 0; i < S; ++i)
+			{
+				arr->operator[](i) = static_cast<T>(S - i);
+			}
+
+			return std::move(arr);
+		}
+	};
+
+	template<size_t S>
+	struct TestArrays<std::string, S>
+	{
+		static std::unique_ptr<std::array<std::string, S>> generateRandomArray()
+		{
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_int_distribution<> wordLengthRand(0, S);
+			std::uniform_int_distribution<> charRand(26, 26 + 'a');
+
+			std::unique_ptr<std::array<std::string, S>> arr(new std::array<std::string, S>());
+
+			for (size_t i = 0; i < S; ++i)
+			{
+				size_t wordLength = wordLengthRand(gen);
+				std::stringstream ss;
+
+				for (size_t q = 0; q < wordLength; ++q)
+				{
+					ss << static_cast<char>(charRand(gen));
+				}
+
+				arr->operator[](i) = ss.str();
+			}
+
+			return std::move(arr);
 		}
 
-		return std::move(arr);
-	}
+		static std::unique_ptr<std::array<std::string, S>> generateAscendingArray()
+		{
+			std::unique_ptr<std::array<std::string, S>> arr(new std::array<std::string, S>());
+
+			for (size_t i = 0; i < S; ++i)
+			{
+				size_t wordLength = i;
+				std::string s;
+				s.reserve(wordLength);
+
+				for (size_t q = 0; q < wordLength; ++q)
+				{
+					s.append("a");
+				}
+
+				arr->operator[](i) = s;
+			}
+
+			return std::move(arr);
+		}
+
+		static std::unique_ptr<std::array<std::string, S>> generateDescendingArray()
+		{
+			std::unique_ptr<std::array<std::string, S>> arr(new std::array<std::string, S>());
+
+			for (size_t i = 0; i < S; ++i)
+			{
+				size_t wordLength = S - i;
+				std::string s;
+				s.reserve(wordLength);
+
+				for (size_t q = 0; q < wordLength; ++q)
+				{
+					s.append("a");
+				}
+
+				arr->operator[](i) = s;
+			}
+
+			return std::move(arr);
+		}
+	};
 }

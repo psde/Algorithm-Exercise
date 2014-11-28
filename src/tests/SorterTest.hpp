@@ -17,7 +17,7 @@ namespace Tests
 	const unsigned int ArraySize = 1000u;
 
 	// All types that are used in testing
-	using SortingTypes = ::testing::Types<int, float, double>;
+	using SortingTypes = ::testing::Types<int, float, double, std::string>;
 
 	// Register types for the three test cases
 	TYPED_TEST_CASE(RandomArray, Tests::SortingTypes);
@@ -48,7 +48,7 @@ namespace Tests
 	protected:
 		virtual void generateArray()
 		{
-			this->array = std::move(Tests::generateRandomArray<T, ArraySize>());
+			this->array = std::move(TestArrays<T, ArraySize>::generateRandomArray());
 		}
 
 		void test(std::function<void(std::array<T, RandomArray::Size>&)> f)
@@ -69,7 +69,7 @@ namespace Tests
 	protected:
 		void generateArray()
 		{
-			this->array = std::move(Tests::generateAscendingArray<T, ArraySize>());
+			this->array = std::move(TestArrays<T, ArraySize>::generateAscendingArray());
 		}
 
 		void test(std::function<void(std::array<T, AscendingArray::Size>&)> f)
@@ -87,7 +87,7 @@ namespace Tests
 	protected:
 		void generateArray()
 		{
-			this->array = std::move(Tests::generateDescendingArray<T, ArraySize>());
+			this->array = std::move(TestArrays<T, ArraySize>::generateDescendingArray());
 		}
 
 		void test(std::function<void(std::array<T, DescendingArray::Size>&)> f)
@@ -120,7 +120,7 @@ namespace Tests
 	protected:
 		void generateArray()
 		{
-			this->array = std::move(Tests::generateRandomArray<T, 1>());
+			this->array = std::move(TestArrays<T, 1>::generateRandomArray());
 		}
 
 		void test(std::function<void(std::array<T, OneSizedArray::Size>&)> f)
