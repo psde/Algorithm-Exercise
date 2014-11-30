@@ -11,15 +11,12 @@ struct QuickSort {
 	{
 		size_t count = rightBound - leftBound;
 
-		if (rightBound <= 1)
-			return;
-
 		size_t pivotIndex = leftBound + (count / 2);
 		T pivotVal = array[pivotIndex];
 
 		size_t left = leftBound;
 		size_t right = rightBound;
-
+		
 		while (left <= right)
 		{
 			while (array[left] < pivotVal)
@@ -34,12 +31,16 @@ struct QuickSort {
 
 			if (left <= right)
 			{
-				std::swap(array[left], array[right]);
+				if (left != right)
+					std::swap(array[left], array[right]);
+
 				left++;
-				right--;
+
+				if (right > 0)
+					right--;
 			}
 		}
-
+		
 		if (leftBound < right)
 			sortInternal(array, leftBound, right);
 
