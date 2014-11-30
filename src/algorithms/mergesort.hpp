@@ -85,23 +85,26 @@ struct MergeSortBottomUp {
 	static const std::string name() { return "MergeSortBottomUp"; }
 
 	static void merge(std::array<T, S> &array, std::array<T, S> &tmp,
-		size_t left, size_t middle, size_t end)
+		size_t start, size_t middle, size_t end)
 	{
+		auto left = start;
 		auto right = middle;
 
-		for(auto j = left; j != end; j++)
+		for(auto j = left; j < end; j++)
 		{
 			if (left < middle && (right >= end || array[left] <= array[right]))
 			{
 				tmp[j] = array[left];
-				left = left + 1;
+				left++;
 			}
 			else
 			{
 				tmp[j] = array[right];
-				right = right + 1;
+				right++;
 			}
 		}
+		
+		std::copy(tmp.begin() + start, tmp.begin() + end, array.begin() + start);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -113,42 +116,17 @@ struct MergeSortBottomUp {
 
 		for(size_t width = 1; width < S; width = 2 * width)
 		{
-			for(size_t i = 0; i < S; i = i + 2 * width)
+			for(size_t i = 0; i < S; i += 2 * width)
 			{
-				merge(array, tmp, i, std::min(i+width, S), std::min(i+2*width, S));
+				merge(array, tmp, i, std::min(i + width, S), std::min(i + 2 * width, S));
 			}
-
-			std::copy(tmp.begin(), tmp.end(), array.begin());
 		}
 	}
 };
 
-
 template <typename T, size_t S>
 struct MergeSortNatural {
 	static const std::string name() { return "MergeSortNatural"; }
-
-	static void merge(std::array<T, S> &array, std::array<T, S> &tmp,
-		size_t left, size_t middle, size_t end)
-	{
-		auto right = middle;
-
-		for(auto j = left; j != end; j++)
-		{
-			if (left < middle && (right >= end || array[left] <= array[right]))
-			{
-				tmp[j] = array[left];
-				left = left + 1;
-			}
-			else
-			{
-				tmp[j] = array[right];
-				right = right + 1;
-			}
-		}
-		
-		std::copy(tmp.begin() + left, tmp.begin() + right, array.begin() + left);
-	}
 
 	static void sort(std::array<T, S> &array)
 	{
@@ -161,6 +139,7 @@ struct MergeSortNatural {
 		size_t right = S - 1;
 		bool sorted = false;
 		size_t l = 0;
+		size_t mid = 0;
 		size_t r = right;
 
 		do {
@@ -184,7 +163,9 @@ struct MergeSortNatural {
 
 				if (r <= right) 
 				{
-					merge(array, tmp, left, l, r);
+					if (r >= S)
+						r = S - 1;
+					MergeSortBottomUp<T,S>::merge(array, tmp, left, l + 1, r + 1);
 					sorted = false;
 				}
 
