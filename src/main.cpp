@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	printArray(a);
 
 
-	return 0;
+	//return 0;
 
 	std::cout << "Testing:" << std::endl;
 	::testing::InitGoogleTest(&argc, argv);

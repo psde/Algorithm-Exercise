@@ -118,12 +118,12 @@ namespace Benchmarks
 			std::unordered_map<std::string, BenchmarkResult> results;
 
 			// Generate ascending and descending arrays only once
-			auto ascending = Tests::generateAscendingArray<double, S>();
-			auto descending = Tests::generateDescendingArray<double, S>();
+			auto ascending = Tests::TestArrays<double, S>::generateAscendingArray();
+			auto descending = Tests::TestArrays<double, S>::generateDescendingArray();
 			for (unsigned int i = 0; i < Cycles; i++)
 			{
 				/// Generate random array every cycle
-				auto random = Tests::generateRandomArray<double, S>();
+				auto random = Tests::TestArrays<double, S>::generateRandomArray();
 
 				for (auto &function : functions)
 				{
