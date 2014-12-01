@@ -139,7 +139,6 @@ struct MergeSortNatural {
 		size_t right = S - 1;
 		bool sorted = false;
 		size_t l = 0;
-		size_t mid = 0;
 		size_t r = right;
 
 		do {
