@@ -113,7 +113,9 @@ namespace Benchmarks
 
 			auto functions = buildFunctions<S,
 				InsertionSort, InsertionSortGuard, InsertionSortGuardTransformed,
-				QuickSort, ShellSort, MergeSortTopDown, MergeSortBottomUp, MergeSortNatural>();
+				QuickSort, QuickSortShift,
+				MergeSortTopDown, MergeSortBottomUp, MergeSortNatural, 
+				ShellSort>();
 
 			std::unordered_map<std::string, BenchmarkResult> results;
 

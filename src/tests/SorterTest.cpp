@@ -20,6 +20,7 @@ namespace Tests
 
 	// QuickSort
 	SORTER_TEST_CASE(QuickSort)
+	SORTER_TEST_CASE(QuickSortShift)
 
 	// ShellSort
 	SORTER_TEST_CASE(ShellSort)
