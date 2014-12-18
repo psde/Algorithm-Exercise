@@ -150,7 +150,7 @@ namespace Benchmarks
 			benchmarkIteration<I>();
 		}
 
-		void printBenchmarkMap(std::ostream& stream, BenchmarkMap &map)
+		void printCSVMap(std::ostream& stream, BenchmarkMap &map)
 		{
 			for (const auto &kv : map)
 			{
@@ -164,7 +164,7 @@ namespace Benchmarks
 			}
 		}
 
-		void printResults(std::ostream& stream)
+		void printCSV(std::ostream& stream)
 		{
 			stream << "Sizes,";
 			for (auto s : _sizes)
@@ -174,31 +174,73 @@ namespace Benchmarks
 			stream << std::endl;
 
 			stream << "Random" << std::endl;
-			printBenchmarkMap(stream, _random);
+			printCSVMap(stream, _random);
 
 			stream << "Ascending" << std::endl;
-			printBenchmarkMap(stream, _ascending);
+			printCSVMap(stream, _ascending);
 
 			stream << "Descending" << std::endl;
-			printBenchmarkMap(stream, _descending);
+			printCSVMap(stream, _descending);
+		}
+
+		void printLatexTable(std::ostream& stream, BenchmarkMap &map, std::string caption)
+		{
+			stream << "\\begin{table}[h]" << std::endl;
+			stream << "\\begin{tabular}{|l|";
+			for (const auto &kv : map)
+			{
+				for (const auto &ms : kv.second)
+				{
+					stream << "l|";
+				}
+				break;
+			}
+			stream << "}" << std::endl;
+			stream << "\\hline" << std::endl;
+
+			for (auto s : _sizes)
+			{
+				stream << " & "<< s;
+			}
+			stream << " \\\\ \\hline" << std::endl;
+
+			for (const auto &kv : map)
+			{
+				stream << kv.first;
+				for (const auto &ms : kv.second)
+				{
+					stream << " & " << ms.count();
+				}
+				stream << " \\\\ \\hline" << std::endl;
+			}
+
+			stream << "\\end{tabular}" << std::endl;
+			stream << "\\caption{" << caption << "}" << std::endl;
+			stream << "\\end{table}" << std::endl;
+		}		
+		
+		void printLatex(std::ostream& stream)
+		{
+			printLatexTable(stream, _random, "Random");
+			printLatexTable(stream, _ascending, "Ascending");
+			printLatexTable(stream, _descending, "Descending");
 		}
 
 	public:
 		Benchmark()
 		{
-			benchmark<0>();
-
+			benchmark<4>();
 			std::cout << std::endl << "Values:" << std::endl;
-			printResults(std::cout);
+			printCSV(std::cout);
 
-			std::cout << std::endl << "Writing to results.csv" << std::endl;
-			std::ofstream fs("results.csv", std::ios::out | std::ios::trunc);
+			std::cout << std::endl << "Writing to benchmark.tex" << std::endl;
+			std::ofstream fs("benchmark.tex", std::ios::out | std::ios::trunc);
 			if (!fs)
 			{
 				std::cerr << "Could not open file" << std::endl;
 				return;
 			}
-			printResults(fs);
+			printLatex(fs);
 			fs.close();
 		}
 	};
