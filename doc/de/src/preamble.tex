@@ -22,6 +22,10 @@
 \usepackage{mathtools}
 \usepackage{csquotes}
 \usepackage{dirtree}
+\usepackage{sidecap}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows, positioning, fit}
 
 \graphicspath{{images/}}
 
@@ -72,3 +76,35 @@
 \fancyhf{}
 \fancyhead[LE,RO]{{\headfont\thepage}}
 \fancyhead[LO]{\headfont\nouppercase{\rightmark}}
+
+%% better syntax highlighting
+\usepackage[chapter, outputdir=out]{minted}
+\usemintedstyle{colorful} %https://raw.github.com/n1k0/SublimeHighlight/master/themes.png
+\newcommand{\mintedfileinput}[2]{
+\microtypesetup{protrusion=false}
+\inputminted[frame=lines,framesep=7pt,linenos=false,numbersep=6pt,baselinestretch=1,xleftmargin=10pt, tabsize=2]{#1}{"../#2"}
+\microtypesetup{protrusion=true}
+}
+
+\newcommand{\mintedfile}[4]{
+\begin{listing}[H]
+  \mintedfileinput{#1}{#2}
+  \vspace{-16pt}
+  \caption{#3}
+  \label{#4}
+\end{listing}
+\vspace{-17pt}
+}
+
+\newcommand{\imagewrap}[4][R]{
+\begin{wrapfigure}{#1}{#2\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=#2\textwidth]{#3}
+  \end{center}
+  \vspace{-20pt}
+  \caption{#4}
+  \label{#3}
+  \vspace{-15pt}
+\end{wrapfigure}
+}

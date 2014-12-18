@@ -25,5 +25,42 @@
 
 \pagenumbering{arabic}
 
-\chapter{Foo}
+\chapter{Sortieralgorithmen}
+
+\section{Insertion Sort}
+\begin{SCfigure}
+  \centering
+  \caption{ ... caption text ... }
+  \includegraphics[width=0.5\textwidth]{graphs/Insertion-Sort.png}
+\end{SCfigure}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sodales nisl eu eleifend accumsan. Curabitur lacinia commodo odio sed laoreet. Etiam sed neque imperdiet, facilisis lectus in, aliquet nibh. Fusce posuere sed ligula quis porta. Nullam ornare lorem at elementum pulvinar. Quisque metus arcu, tincidunt non elit ut, porttitor tempor sapien. Pellentesque at dolor vitae neque porttitor commodo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+
+Donec a orci vitae elit sollicitudin maximus eu id neque. Donec in enim vel diam varius eleifend. Cras maximus semper elit, a scelerisque tortor cursus non. Etiam tempor tortor et nunc semper maximus. Aliquam quis rhoncus diam, non congue felis. Mauris tempor sem et sem luctus, non ultricies dolor dapibus. In ornare non mi tincidunt aliquam. Maecenas suscipit elit eget nisl finibus vehicula. Curabitur dignissim ante erat, eget imperdiet velit lobortis malesuada. Nulla bibendum laoreet purus, et fringilla velit viverra ultrices.
+
+Vestibulum dignissim odio lacus, sit amet consectetur mauris vestibulum vel. Proin rutrum elit eu iaculis vulputate. Vivamus id tortor et ex efficitur consectetur at vulputate mi. Duis pulvinar imperdiet ex. Sed euismod, ligula et lobortis interdum, felis dui efficitur nulla, ac gravida nisl nulla ut neque. Nunc vel aliquam sem. Nunc scelerisque dignissim tortor, a iaculis lectus auctor ac. Cras varius velit at ex tincidunt porta. Phasellus in nibh mi. Cras condimentum sapien erat, nec molestie lacus vulputate quis. 
+
+\section{Quicksort}
+
+Im Durchschnitt kommt Quicksort mit $\mathcal{O}(n\log{}n)$ Vergleichen aus, im schlimmsten Fall $\mathcal{O}(n^2)$. In der Praxis ist Quicksort meist schneller als andere $\mathcal{O}(n\log{}n)$ Algorithmen. Auch sein sequentieller Speicherzugriff zusammen mit seiner sehr kurzen Schleife ist prädestiniert von einem Prozessorcache zu profitieren.
+
+\paragraph{Beispiel}
+\imagewrap{0.4}{graphs/quicksort.png}{Quicksort}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sodales nisl eu eleifend accumsan. Curabitur lacinia commodo odio sed laoreet. Etiam sed neque imperdiet, facilisis lectus in, aliquet nibh. Fusce posuere sed ligula quis porta. Nullam ornare lorem at elementum pulvinar. Quisque metus arcu, tincidunt non elit ut, porttitor tempor sapien. Pellentesque at dolor vitae neque porttitor commodo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+
+Donec a orci vitae elit sollicitudin maximus eu id neque. Donec in enim vel diam varius eleifend. Cras maximus semper elit, a scelerisque tortor cursus non. Etiam tempor tortor et nunc semper maximus. Aliquam quis rhoncus diam, non congue felis. Mauris tempor sem et sem luctus, non ultricies dolor dapibus. In ornare non mi tincidunt aliquam. Maecenas suscipit elit eget nisl finibus vehicula. Curabitur dignissim ante erat, eget imperdiet velit lobortis malesuada. Nulla bibendum laoreet purus, et fringilla velit viverra ultrices.
+
+Vestibulum dignissim odio lacus, sit amet consectetur mauris vestibulum vel. Proin rutrum elit eu iaculis vulputate. Vivamus id tortor et ex efficitur consectetur at vulputate mi. Duis pulvinar imperdiet ex. Sed euismod, ligula et lobortis interdum, felis dui efficitur nulla, ac gravida nisl nulla ut neque. Nunc vel aliquam sem. Nunc scelerisque dignissim tortor, a iaculis lectus auctor ac. Cras varius velit at ex tincidunt porta. Phasellus in nibh mi. Cras condimentum sapien erat, nec molestie lacus vulputate quis. 
+
+\section{Mergesort}
+\imagewrap{0.4}{graphs/mergesort.png}{Mergesort}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sodales nisl eu eleifend accumsan. Curabitur lacinia commodo odio sed laoreet. Etiam sed neque imperdiet, facilisis lectus in, aliquet nibh. Fusce posuere sed ligula quis porta. Nullam ornare lorem at elementum pulvinar. Quisque metus arcu, tincidunt non elit ut, porttitor tempor sapien. Pellentesque at dolor vitae neque porttitor commodo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+
+Donec a orci vitae elit sollicitudin maximus eu id neque. Donec in enim vel diam varius eleifend. Cras maximus semper elit, a scelerisque tortor cursus non. Etiam tempor tortor et nunc semper maximus. Aliquam quis rhoncus diam, non congue felis. Mauris tempor sem et sem luctus, non ultricies dolor dapibus. In ornare non mi tincidunt aliquam. Maecenas suscipit elit eget nisl finibus vehicula. Curabitur dignissim ante erat, eget imperdiet velit lobortis malesuada. Nulla bibendum laoreet purus, et fringilla velit viverra ultrices.
+
+Vestibulum dignissim odio lacus, sit amet consectetur mauris vestibulum vel. Proin rutrum elit eu iaculis vulputate. Vivamus id tortor et ex efficitur consectetur at vulputate mi. Duis pulvinar imperdiet ex. Sed euismod, ligula et lobortis interdum, felis dui efficitur nulla, ac gravida nisl nulla ut neque. Nunc vel aliquam sem. Nunc scelerisque dignissim tortor, a iaculis lectus auctor ac. Cras varius velit at ex tincidunt porta. Phasellus in nibh mi. Cras condimentum sapien erat, nec molestie lacus vulputate quis. 
+
+\chapter{Zeitmessungen}
+
+\input{benchmark/benchmark.tex}
+
 \end{document}
