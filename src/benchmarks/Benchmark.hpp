@@ -52,12 +52,28 @@ namespace Benchmarks
 		};
 
 		template<size_t S>
+		void trashCache()
+		{
+			auto ary = std::unique_ptr<std::array<double, S>>(new std::array<double, S>());
+
+			volatile double tmp = 0;
+			for (volatile int i = 0; i < S; i++)
+			{
+				tmp = i;
+				ary->operator[](i) = tmp;
+				ary->operator[](i) *= 42;
+				tmp = ary->operator[](i);
+			}
+		}
+
+		template<size_t S>
 		BenchmarkTime benchmarkSorterWithArray(std::function<void(std::array<double, S>&)> f, std::array<double, S> *ary)
 		{
 			// Create a copy so we do not modify the original
 			auto tmp = std::unique_ptr<std::array<double, S>>(new std::array<double, S>(*ary));
 
 			auto a = tmp.get();
+			trashCache<S>();
 			auto start = std::chrono::high_resolution_clock::now();
 			f(*a);
 			auto end = std::chrono::high_resolution_clock::now();
@@ -229,7 +245,7 @@ namespace Benchmarks
 	public:
 		Benchmark()
 		{
-			benchmark<4>();
+			benchmark<7>();
 			std::cout << std::endl << "Values:" << std::endl;
 			printCSV(std::cout);
 
