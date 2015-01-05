@@ -94,12 +94,12 @@ struct MergeSortBottomUp {
 		{
 			if (left < middle && (right >= end || array[left] <= array[right]))
 			{
-				tmp->operator[](j) = array[left];
+				(*tmp)[j] = array[left];
 				left++;
 			}
 			else
 			{
-				tmp->operator[](j) = array[right];
+				(*tmp)[j] = array[right];
 				right++;
 			}
 		}

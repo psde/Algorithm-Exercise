@@ -32,38 +32,38 @@ namespace Tests
 			std::mt19937 gen(rd());
 			std::uniform_real_distribution<> f_rand(0, static_cast<float>(S)* 2.f);
 
-			std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
+			std::unique_ptr<std::array<T, S>> ary(new std::array<T, S>());
 
 			for (size_t i = 0; i < S; ++i)
 			{
-				arr->operator[](i) = static_cast<T>(static_cast<float>(S)-f_rand(gen));
+				(*ary)[i] = static_cast<T>(static_cast<float>(S)-f_rand(gen));
 			}
 
-			return std::move(arr);
+			return std::move(ary);
 		}
 
 		static std::unique_ptr<std::array<T, S>> generateAscendingArray()
 		{
-			std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
+			std::unique_ptr<std::array<T, S>> ary(new std::array<T, S>());
 
 			for (size_t i = 0; i < S; ++i)
 			{
-				arr->operator[](i) = static_cast<T>(i);
+				(*ary)[i] = static_cast<T>(i);
 			}
 
-			return std::move(arr);
+			return std::move(ary);
 		}
 
 		static std::unique_ptr<std::array<T, S>> generateDescendingArray()
 		{
-			std::unique_ptr<std::array<T, S>> arr(new std::array<T, S>());
+			std::unique_ptr<std::array<T, S>> ary(new std::array<T, S>());
 
 			for (size_t i = 0; i < S; ++i)
 			{
-				arr->operator[](i) = static_cast<T>(S - i);
+				(*ary)[i] = static_cast<T>(S - i);
 			}
 
-			return std::move(arr);
+			return std::move(ary);
 		}
 	};
 
@@ -77,7 +77,7 @@ namespace Tests
 			std::uniform_int_distribution<> wordLengthRand(0, S);
 			std::uniform_int_distribution<> charRand(26, 26 + 'a');
 
-			std::unique_ptr<std::array<std::string, S>> arr(new std::array<std::string, S>());
+			std::unique_ptr<std::array<std::string, S>> ary(new std::array<std::string, S>());
 
 			for (size_t i = 0; i < S; ++i)
 			{
@@ -89,15 +89,15 @@ namespace Tests
 					ss << static_cast<char>(charRand(gen));
 				}
 
-				arr->operator[](i) = ss.str();
+				(*ary)[i] = ss.str();
 			}
 
-			return std::move(arr);
+			return std::move(ary);
 		}
 
 		static std::unique_ptr<std::array<std::string, S>> generateAscendingArray()
 		{
-			std::unique_ptr<std::array<std::string, S>> arr(new std::array<std::string, S>());
+			std::unique_ptr<std::array<std::string, S>> ary(new std::array<std::string, S>());
 
 			for (size_t i = 0; i < S; ++i)
 			{
@@ -110,15 +110,15 @@ namespace Tests
 					s.append("a");
 				}
 
-				arr->operator[](i) = s;
+				(*ary)[i] = s;
 			}
 
-			return std::move(arr);
+			return std::move(ary);
 		}
 
 		static std::unique_ptr<std::array<std::string, S>> generateDescendingArray()
 		{
-			std::unique_ptr<std::array<std::string, S>> arr(new std::array<std::string, S>());
+			std::unique_ptr<std::array<std::string, S>> ary(new std::array<std::string, S>());
 
 			for (size_t i = 0; i < S; ++i)
 			{
@@ -131,10 +131,10 @@ namespace Tests
 					s.append("a");
 				}
 
-				arr->operator[](i) = s;
+				(*ary)[i] = s;
 			}
 
-			return std::move(arr);
+			return std::move(ary);
 		}
 	};
 }

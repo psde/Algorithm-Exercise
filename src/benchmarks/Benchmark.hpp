@@ -60,9 +60,9 @@ namespace Benchmarks
 			for (volatile int i = 0; i < S; i++)
 			{
 				tmp = i;
-				ary->operator[](i) = tmp;
-				ary->operator[](i) *= 42;
-				tmp = ary->operator[](i);
+				(*ary)[i] = tmp;
+				(*ary)[i] *= 42;
+				tmp = (*ary)[i];
 			}
 		}
 
@@ -245,7 +245,7 @@ namespace Benchmarks
 	public:
 		Benchmark()
 		{
-			benchmark<7>();
+			benchmark<1>();
 			std::cout << std::endl << "Values:" << std::endl;
 			printCSV(std::cout);
 
