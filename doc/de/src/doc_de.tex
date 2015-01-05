@@ -28,20 +28,29 @@
 \chapter{Sortieralgorithmen}
 
 \section{Insertion Sort}
+
+Der Insertion Sort Algorithmus ist ein leicht zu implementierendes und stabiles Sortierverfahren. Es nimmt aus der unsortierten Folge ein Element und fügt es an richtiger Stelle der Folge wieder ein, wobei die übrigen Elemente der Folge beim Einfügen nach hinten verschoben werden müssen. Dies wird nun an jeder Stelle der Folge von Anfang bis Ende durchgeführt bis die Folge sortiert ist. Der große Teil des Aufwands beim Insertion Sort liegt hierbei im Finden der richtigen Einfügeposition und das Verschieben der übrigen Elemente.
+
+\clearpage
+
 \begin{SCfigure}
   \centering
-  \caption{ ... caption text ... }
   \includegraphics[width=0.5\textwidth]{graphs/Insertion-Sort.png}
+  \caption*{\textbf{Schritt 1}: Das erste Element wird als sortiert angenommen und übersprungen. \\[45pt] %
+  	\textbf{Schritt 2}: Das zweite Element wird überprüft und ist an der richtigen Stelle der Folge. \\[40pt] %
+  	\textbf{Schritt 3}: Die \textit{2} ist nicht an der richtigen Stelle und muss nach an der zweite Stelle eingefügt werden. Alle nachfolgenden Elemente müssen verschoben werden. \\[15pt] %
+  	\textbf{Schritt 4}: Das vierte Element wiederum muss nicht verschoben werden. \\[42pt] %
+  	\textbf{Schritt 5}: Hier muss nun die \textit{6} vor die \textit{7} an der vierten Stelle eingefügt werden und alle nachfolgenden Elemente verschoben werden. \\[28pt] %
+  	\textbf{Schritt 6}: Auch hier wird muss \textit{3} weit am Anfang eingefügt und viele nachfolgende Elemente verschoben werden.\\[32pt] %
+  	\textbf{Schritt 7}: Die \textit{5} wird an der fünften Stelle eingefügt und alle nachfolgenden Elemente verschoben. \\[26pt] %
+  	\textbf{Schritt 8}: Das letzte Element muss nun an der zweiten Position eingefügt werden, und beinahe die komplette Folge muss verschoben werden. \\[16pt] %
+  	\textbf{Schritt 9}: Die Folge ist nun vollständig sortiert.
+  }
 \end{SCfigure}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sodales nisl eu eleifend accumsan. Curabitur lacinia commodo odio sed laoreet. Etiam sed neque imperdiet, facilisis lectus in, aliquet nibh. Fusce posuere sed ligula quis porta. Nullam ornare lorem at elementum pulvinar. Quisque metus arcu, tincidunt non elit ut, porttitor tempor sapien. Pellentesque at dolor vitae neque porttitor commodo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-
-Donec a orci vitae elit sollicitudin maximus eu id neque. Donec in enim vel diam varius eleifend. Cras maximus semper elit, a scelerisque tortor cursus non. Etiam tempor tortor et nunc semper maximus. Aliquam quis rhoncus diam, non congue felis. Mauris tempor sem et sem luctus, non ultricies dolor dapibus. In ornare non mi tincidunt aliquam. Maecenas suscipit elit eget nisl finibus vehicula. Curabitur dignissim ante erat, eget imperdiet velit lobortis malesuada. Nulla bibendum laoreet purus, et fringilla velit viverra ultrices.
-
-Vestibulum dignissim odio lacus, sit amet consectetur mauris vestibulum vel. Proin rutrum elit eu iaculis vulputate. Vivamus id tortor et ex efficitur consectetur at vulputate mi. Duis pulvinar imperdiet ex. Sed euismod, ligula et lobortis interdum, felis dui efficitur nulla, ac gravida nisl nulla ut neque. Nunc vel aliquam sem. Nunc scelerisque dignissim tortor, a iaculis lectus auctor ac. Cras varius velit at ex tincidunt porta. Phasellus in nibh mi. Cras condimentum sapien erat, nec molestie lacus vulputate quis. 
-
+\clearpage
 \section{Quicksort}
 
-Im Durchschnitt kommt Quicksort mit $\mathcal{O}(n\log{}n)$ Vergleichen aus, im schlimmsten Fall $\mathcal{O}(n^2)$. In der Praxis ist Quicksort meist schneller als andere $\mathcal{O}(n\log{}n)$ Algorithmen. Auch sein sequentieller Speicherzugriff zusammen mit seiner sehr kurzen Schleife ist prädestiniert von einem Prozessorcache zu profitieren.
+Im Durchschnitt kommt Quicksort mit $\mathcal{O}(n\log{}n)$ Vergleichen aus, im schlimmsten Fall $\mathcal{O}(n^2)$. In der Praxis ist Quicksort meist schneller als andere $\mathcal{O}(n\log{}n)$ Algorithmen. Auch sein sequentieller Speicherzugriff zusammen mit seiner sehr kurzen Schleife ist prädestiniert um von dem Prozessorcache zu profitieren.
 
 \paragraph{Beispiel}
 \imagewrap{0.4}{graphs/quicksort.png}{Quicksort}
