@@ -8,7 +8,7 @@
  pdfkeywords={}
 }
 
-\title{Labor Algorithmen}
+\title{Labor Algorithmen - Sortierverfahren}
 \subtitle{Dokumentation}
 \author{Mathias Garbe}
 
@@ -29,7 +29,11 @@
 
 \section{Insertion Sort}
 
-Der Insertion Sort Algorithmus ist ein leicht zu implementierendes und stabiles Sortierverfahren. Es nimmt aus der unsortierten Folge ein Element und fügt es an richtiger Stelle der Folge wieder ein, wobei die übrigen Elemente der Folge beim Einfügen nach hinten verschoben werden müssen. Dies wird nun an jeder Stelle der Folge von Anfang bis Ende durchgeführt bis die Folge sortiert ist. Der große Teil des Aufwands beim Insertion Sort liegt hierbei im Finden der richtigen Einfügeposition und das Verschieben der übrigen Elemente.
+Der Insertion Sort Algorithmus ist ein leicht zu implementierendes und stabiles Sortierverfahren. Es nimmt aus der unsortierten Folge ein Element und fügt es vorne an richtiger Stelle der Folge wieder ein, wobei die übrigen Elemente der Folge beim Einfügen nach hinten verschoben werden müssen. Dies wird nun an jeder Stelle der Folge von Anfang bis Ende durchgeführt bis die Folge sortiert ist. Der große Teil des Aufwands beim Insertion Sort liegt hierbei im Finden der richtigen Einfügeposition und das Verschieben der übrigen Elemente.
+
+\paragraph{Variation: Wächterelement} Bei dieser Variation wird das kleinste Element vor dem Sortieren mit dem Insertion Sort Algorithmus an die erste Stelle der Folge verschoben. Dieses Element wird auch \textit{Wächterelement} genannt. Somit kann im Rumpf des Algorithmus die Abfrage auf ein Unterschreiten der Folge eingespart werden, was gegebenenfalls die Laufzeit reduzieren kann.
+
+\paragraph{Variation: Wächterelement und Indextransformation} Zusätzlich zum Wächterelement wird hierbei die Berechnung des neuen Indexes an den Anfang der Schleife verschoben und somit kann gegebenenfalls die Laufzeit reduziert werden, da der neue Index nur einmal anstatt mehrmals berechnet werden muss.
 
 \clearpage
 
