@@ -53,12 +53,13 @@ Der Insertion Sort Algorithmus ist ein leicht zu implementierendes und stabiles 
 \end{SCfigure}
 \clearpage
 \section{Quicksort}
+Der Quicksort Algorithmus (vom englischen \textit{quick}, also `schnell') ist ein rekursives Sortierverfahren. Es ist im Gegensatz zu Mergesort und Insertion Sort nicht stabil. Es arbeitet nach dem ``teilen und herrschen''-Prinzip (\textit{divide and conquer}). Das Grundprinzip von Quicksort besteht im Aufteilen einer Folge anhand eines Pivotelements. In unserem Fall ist das Pivotelement immer das mittlere Element. Nun werden alle Elemente die kleiner als das Pivotelements auf die linke Seite verschoben und alle Elemente die größer sind rechts davon. Dabei werden diese Elemente nicht (wie etwa bei Insertion Sort) sortiert eingefügt, sondern nur verschoben. Danach wird die Folge in zwei Teilfolgen aufgeteilt und der Prozess für beide Teilfolgen wiederholt. Nachdem alle Teilfolgen nur noch ein Element haben ist die komplette Folge sortiert.
 
 Im Durchschnitt kommt Quicksort mit $\mathcal{O}(n\log{}n)$ Vergleichen aus, im schlimmsten Fall $\mathcal{O}(n^2)$. In der Praxis ist Quicksort meist schneller als andere $\mathcal{O}(n\log{}n)$ Algorithmen. Auch sein sequentieller Speicherzugriff zusammen mit seiner sehr kurzen Schleife ist prädestiniert um von dem Prozessorcache zu profitieren.
 
 \paragraph{Beispiel} 
 \imagewrap{0.4}{graphs/quicksort.png}{Quicksort Beispiel}
-\textbf{Schritt 1:} Als Pivot wird der Mittelpunkt der Folge genommen, hier die \textit{7}. Alle Werte kleiner als des Pivots werden auf die linke Seite verschoben, alle Werte größer des Pivots auf die rechte Seite. Danach wird die Folge in der Mitte (nach der 7) partitioniert.
+\textbf{Schritt 1:} Als Pivot wird der Mittelpunkt der Folge genommen, hier die \textit{4}. Alle Werte kleiner als des Pivots werden auf die linke Seite verschoben, alle Werte größer des Pivots auf die rechte Seite. Danach wird die Folge in der Mitte partitioniert.
 
 \textbf{Schritt 2 und Schritt 3:} Für alle Partitionen wird Schritt 1 wiederholt bis jede Partition nur noch aus einem Element besteht.
 
