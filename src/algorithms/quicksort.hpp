@@ -57,7 +57,6 @@ struct QuickSort {
 	}
 };
 
-
 template <typename T, size_t S>
 struct QuickSortShift {
 	static const std::string name() { return "QuickSortShift"; }
@@ -106,6 +105,51 @@ struct QuickSortShift {
 	static void sort(std::array<T, S> &array)
 	{
 		if(S <= 1)
+			return;
+
+		sortInternal(array, 0, S - 1);
+	}
+};
+
+template <typename T, size_t S>
+struct QuickSortShift3Way {
+	static const std::string name() { return "QuickSortShift3Way"; }
+
+	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	{
+		if (rightBound <= leftBound)
+			return;
+
+		size_t left = leftBound;
+		size_t right = rightBound;
+		T pivot = array[leftBound];
+		size_t i = leftBound;
+
+		while (i <= right)
+		{
+			if (array[i] < pivot)
+			{
+				std::swap(array[left++], array[i++]);
+			}
+			else if (array[i] > pivot)
+			{
+				std::swap(array[i], array[right--]);
+			}
+			else
+			{
+				i++;
+			}
+		}
+
+		if (left != 0)
+			sortInternal(array, leftBound, left - 1);
+
+		sortInternal(array, right + 1, rightBound);
+	}
+
+	static void sort(std::array<T, S> &array)
+	{
+		if (S <= 1)
 			return;
 
 		sortInternal(array, 0, S - 1);

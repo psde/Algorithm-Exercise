@@ -129,7 +129,7 @@ namespace Benchmarks
 
 			auto functions = buildFunctions<S,
 				InsertionSort, InsertionSortGuard, InsertionSortGuardTransformed,
-				QuickSort, QuickSortShift,
+				QuickSort, QuickSortShift, QuickSortShift3Way,
 				MergeSortTopDown, MergeSortBottomUp, MergeSortNatural, 
 				ShellSort>();
 
