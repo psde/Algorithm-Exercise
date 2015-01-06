@@ -29,7 +29,7 @@
 
 \section{Insertion Sort}
 
-Der Insertion Sort Algorithmus ist ein leicht zu implementierendes und stabiles Sortierverfahren. Es nimmt aus der unsortierten Folge ein Element und fügt es vorne an richtiger Stelle der Folge wieder ein, wobei die übrigen Elemente der Folge beim Einfügen nach hinten verschoben werden müssen. Dies wird nun an jeder Stelle der Folge von Anfang bis Ende durchgeführt bis die Folge sortiert ist. Der große Teil des Aufwands beim Insertion Sort liegt hierbei im Finden der richtigen Einfügeposition und das Verschieben der übrigen Elemente.
+Der Insertion Sort Algorithmus ist ein leicht zu implementierendes und stabiles Sortierverfahren. Es nimmt aus der unsortierten Folge ein Element und fügt es vorne an richtiger Stelle der Folge wieder ein (daher auch \textit{Insertion Sort}), wobei die übrigen Elemente der Folge beim Einfügen nach hinten verschoben werden müssen. Dies wird nun an jeder Stelle der Folge von Anfang bis Ende durchgeführt bis die Folge sortiert ist. Der große Teil des Aufwands beim Insertion Sort liegt hierbei im Finden der richtigen Einfügeposition und das Verschieben der übrigen Elemente.
 
 \paragraph{Variation: Wächterelement} Bei dieser Variation wird das kleinste Element vor dem Sortieren mit dem Insertion Sort Algorithmus an die erste Stelle der Folge verschoben. Dieses Element wird auch \textit{Wächterelement} genannt. Somit kann im Rumpf des Algorithmus die Abfrage auf ein Unterschreiten der Folge eingespart werden, was gegebenenfalls die Laufzeit reduzieren kann.
 
@@ -60,23 +60,29 @@ Im Durchschnitt kommt Quicksort mit $\mathcal{O}(n\log{}n)$ Vergleichen aus, im 
 \imagewrap{0.4}{graphs/quicksort.png}{Quicksort Beispiel}
 \textbf{Schritt 1:} Als Pivot wird der Mittelpunkt der Folge genommen, hier die \textit{7}. Alle Werte kleiner als des Pivots werden auf die linke Seite verschoben, alle Werte größer des Pivots auf die rechte Seite. Danach wird die Folge in der Mitte (nach der 7) partitioniert.
 
-\textbf{Schritt 2 und Schritt 3:} Für alle Partitionen wird Schritt 1 wiederholt.
+\textbf{Schritt 2 und Schritt 3:} Für alle Partitionen wird Schritt 1 wiederholt bis jede Partition nur noch aus einem Element besteht.
 
 \textbf{Schritt 4:} Jede Partition besteht nur noch aus einem Element. Die Folge ist demnach vollständig sortiert.
 
-\paragraph{Variation: Shfitoperator statt Division}
+\paragraph{Variation: Shiftoperator statt Division} Bei dieser Variante wird die Mitte der Partition nicht durch eine Division durch 2 ermittelt sondern durch einen Rechtsshift um 1.
+
 \paragraph{Variation: 3-way-partitioning mit Shiftoperator}
+
 \paragraph{Variation: Hybrider Ansatz}
 \section{Mergesort}
+Das Mergesort Sortierungsverfahren arbeitet nach dem Prinzip des \textit{teilen und herrschen} (\textit{divide and conquer}). Auch dieser Algorithmus sortiert Folgen stabil. Es betrachtet die unsortierte Folge als eine Liste von Teilfolgen, welche am Anfang nur ein Element besitzen. Diese Teilfolgen werden dann im Reißverschlussverfahren zu größeren Folgen zusammengefügt (das \textit{mergen}). Dabei kann Mergesort davon ausgehen, dass jede Teilfolge sortiert ist. Dies ist im ersten Schritt sichergestellt, da jede Teilfolge nur aus ein Element besteht und somit schon sortiert ist. Um nun zwei sortierte Teilfolgen zusammenzufügen müssen diese Teilfolgen jeweils von links nach rechts durchgegangen werden und jeweils der kleinere Wert aus der Teilfolge genommen und in die neue Folge hinten angefügt werden. Dies wird solange wiederholt, bis beide Teilfolgen leer sind. Somit entsteht eine neue, sortierte Folge. Wird dies nun für alle Teilfolgen wiederholt bis es nur noch eine Folge gibt so ist diese gesamte Folge sortiert.
+
+Die Arbeit des Aufteilen einer unsortierten Folge ist trivial, das eigentliche Zusammenfügen ist bei Mergesort jedoch die eigentliche Arbeit. Auch kann Mergesort nur sehr aufwändig ohne einen temporären Speicher ausgeführt werden (\textit{in-place}) und ist somit in der Regel auf den Speicherplatz einer zweiten, gleichgroßen Folge angewiesen.
+
+Mergesort benötigt sowohl im durchschnitt als auch im besten und schlechtesten Fall stets $\mathcal{O}(n\log{}n)$ Vergleiche.
 
 \paragraph{Beispiel}
 \imagewrap{0.4}{graphs/mergesort.png}{Mergesort}
 
-
-
 \paragraph{Variation: Natural Mergesort} Bei dem Natural Mergesort wird zuerst versucht natürlich vorkommende Teilstücke in der Folge zu finden, die bereits sortiert sind. Durch das Ausnutzen dieser Sortierung lässt sich gegebenenfalls Schritte des Mergesorts einsparen. Es können dabei sowohl aufsteigend als auch absteigend sortierte Teilfolgen benutzt werden (\textit{Bitonische Läufe}).
 
 \chapter{Zeitmessungen}
+Die Zeiten der einzelnen Messungen sind Durchschnittswerte von fünf unabhängigen Läufen mit jeweils unterschiedlichen Zufallsfolgen. Dabei wird pro Lauf jeder Algorithmus mit den gleichen Zufallsfolgen getestet. Die auf- und absteigenden Folgen unterscheiden sich nicht zwischen den Läufen.
 
 \input{benchmark/benchmark.tex}
 
