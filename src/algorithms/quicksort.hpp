@@ -9,41 +9,36 @@ struct QuickSort {
 
 	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
+		if (rightBound <= leftBound)
+			return;
+
+		// Swap pivot element to the end
 		size_t pivotIndex = (leftBound + rightBound) / 2;
-		T pivotVal = array[pivotIndex];
+		std::swap(array[pivotIndex], array[rightBound]);
 
-		size_t left = leftBound;
-		size_t right = rightBound;
+		size_t i = leftBound - 1;
+		size_t j = rightBound;
+		T v = array[rightBound];
 		
-		while (left <= right)
+		for (;;)
 		{
-			while (array[left] < pivotVal)
+			while (array[++i] < v);
+			while (v < array[--j])
 			{
-				left++;
+				if (j == leftBound)
+					break;
 			}
+			if (i >= j)
+				break;
 
-			while (array[right] > pivotVal)
-			{
-				right--;
-			}
-
-			if (left <= right)
-			{
-				if (left != right)
-					std::swap(array[left], array[right]);
-
-				left++;
-
-				if (right > 0)
-					right--;
-			}
+			std::swap(array[i], array[j]);
 		}
+		std::swap(array[i], array[rightBound]);
 		
-		if (leftBound < right)
-			sortInternal(array, leftBound, right);
+		if (i != 0)
+			sortInternal(array, leftBound, i - 1);
 
-		if (left < rightBound)
-			sortInternal(array, left, rightBound);
+		sortInternal(array, i + 1, rightBound);
 	}
 
 	static void sort(std::array<T, S> &array)
