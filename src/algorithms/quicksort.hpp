@@ -9,9 +9,7 @@ struct QuickSort {
 
 	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
-		size_t count = rightBound - leftBound;
-
-		size_t pivotIndex = leftBound + (count / 2);
+		size_t pivotIndex = (leftBound + rightBound) / 2;
 		T pivotVal = array[pivotIndex];
 
 		size_t left = leftBound;
@@ -63,9 +61,7 @@ struct QuickSortShift {
 
 	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
-		size_t count = rightBound - leftBound;
-
-		size_t pivotIndex = leftBound + (count >> 1);
+		size_t pivotIndex = (leftBound + rightBound) >> 1;
 		T pivotVal = array[pivotIndex];
 
 		size_t left = leftBound;
@@ -120,18 +116,20 @@ struct QuickSortShift3Way {
 		if (rightBound <= leftBound)
 			return;
 
+		size_t pivotIndex = (leftBound + rightBound) >> 1;
+
 		size_t left = leftBound;
 		size_t right = rightBound;
-		T pivot = array[leftBound];
+		T pivotVal = array[pivotIndex];
 		size_t i = leftBound;
 
 		while (i <= right)
 		{
-			if (array[i] < pivot)
+			if (array[i] < pivotVal)
 			{
 				std::swap(array[left++], array[i++]);
 			}
-			else if (array[i] > pivot)
+			else if (array[i] > pivotVal)
 			{
 				std::swap(array[i], array[right--]);
 			}
@@ -141,10 +139,80 @@ struct QuickSortShift3Way {
 			}
 		}
 
-		if (left != 0)
+		if (leftBound < left)
 			sortInternal(array, leftBound, left - 1);
 
-		sortInternal(array, right + 1, rightBound);
+		if (right < rightBound)
+			sortInternal(array, right + 1, rightBound);
+	}
+
+	static void sort(std::array<T, S> &array)
+	{
+		if (S <= 1)
+			return;
+
+		sortInternal(array, 0, S - 1);
+	}
+};
+
+
+template <typename T, size_t S>
+struct QuickSort3WayHybrid {
+	static const std::string name() { return "QuickSortHybrid"; }
+
+	static void sortInsertion(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	{
+		size_t i, j;
+		for (i = leftBound; i <= rightBound; i++){
+			j = i;
+			T t = array[j];
+			while (j > leftBound && array[j - 1] > t){
+				array[j] = array[j - 1];
+				j--;
+			}
+			array[j] = t;
+		}
+	}
+
+	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	{
+		if (rightBound <= leftBound)
+			return;
+
+		if (rightBound - leftBound < 9)
+		{
+			sortInsertion(array, leftBound, rightBound);
+			return;
+		}
+
+		size_t pivotIndex = (leftBound + rightBound) >> 1;
+
+		size_t left = leftBound;
+		size_t right = rightBound;
+		T pivotVal = array[pivotIndex];
+		size_t i = leftBound;
+
+		while (i <= right)
+		{
+			if (array[i] < pivotVal)
+			{
+				std::swap(array[left++], array[i++]);
+			}
+			else if (array[i] > pivotVal)
+			{
+				std::swap(array[i], array[right--]);
+			}
+			else
+			{
+				i++;
+			}
+		}
+
+		if (leftBound < left)
+			sortInternal(array, leftBound, left - 1);
+
+		if (right + 1 < rightBound)
+			sortInternal(array, right + 1, rightBound);
 	}
 
 	static void sort(std::array<T, S> &array)
