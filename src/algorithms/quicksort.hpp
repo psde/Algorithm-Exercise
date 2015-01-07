@@ -3,11 +3,13 @@
 #include <array>
 #include <string>
 
+#include "algorithms/mergesort.hpp"
+
 template <typename T, size_t S>
 struct QuickSort {
 	static const std::string name() { return "QuickSort"; }
 
-	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	static void quickSort(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
 		if (rightBound <= leftBound)
 			return;
@@ -16,13 +18,16 @@ struct QuickSort {
 		size_t pivotIndex = (leftBound + rightBound) / 2;
 		std::swap(array[pivotIndex], array[rightBound]);
 
-		size_t i = leftBound - 1;
+		size_t i = leftBound;
 		size_t j = rightBound;
 		T v = array[rightBound];
 		
 		for (;;)
 		{
-			while (array[++i] < v);
+			while (array[i] < v) {
+				i++;
+			}
+
 			while (v < array[--j])
 			{
 				if (j == leftBound)
@@ -36,9 +41,9 @@ struct QuickSort {
 		std::swap(array[i], array[rightBound]);
 		
 		if (i != 0)
-			sortInternal(array, leftBound, i - 1);
+			quickSort(array, leftBound, i - 1);
 
-		sortInternal(array, i + 1, rightBound);
+		quickSort(array, i + 1, rightBound);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -46,7 +51,7 @@ struct QuickSort {
 		if(S <= 1)
 			return;
 
-		sortInternal(array, 0, S - 1);
+		quickSort(array, 0, S - 1);
 	}
 };
 
@@ -54,43 +59,41 @@ template <typename T, size_t S>
 struct QuickSortShift {
 	static const std::string name() { return "QuickSortShift"; }
 
-	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	static void quickSort(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
+		if (rightBound <= leftBound)
+			return;
+
+		// Swap pivot element to the end
 		size_t pivotIndex = (leftBound + rightBound) >> 1;
-		T pivotVal = array[pivotIndex];
+		std::swap(array[pivotIndex], array[rightBound]);
 
-		size_t left = leftBound;
-		size_t right = rightBound;
-		
-		while (left <= right)
+		size_t i = leftBound;
+		size_t j = rightBound;
+		T v = array[rightBound];
+
+		for (;;)
 		{
-			while (array[left] < pivotVal)
-			{
-				left++;
+			while (array[i] < v) {
+				i++;
 			}
 
-			while (array[right] > pivotVal)
+			while (v < array[--j])
 			{
-				right--;
+				if (j == leftBound)
+					break;
 			}
+			if (i >= j)
+				break;
 
-			if (left <= right)
-			{
-				if (left != right)
-					std::swap(array[left], array[right]);
-
-				left++;
-
-				if (right > 0)
-					right--;
-			}
+			std::swap(array[i], array[j]);
 		}
-		
-		if (leftBound < right)
-			sortInternal(array, leftBound, right);
+		std::swap(array[i], array[rightBound]);
 
-		if (left < rightBound)
-			sortInternal(array, left, rightBound);
+		if (i != 0)
+			quickSort(array, leftBound, i - 1);
+
+		quickSort(array, i + 1, rightBound);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -98,7 +101,7 @@ struct QuickSortShift {
 		if(S <= 1)
 			return;
 
-		sortInternal(array, 0, S - 1);
+		quickSort(array, 0, S - 1);
 	}
 };
 
@@ -106,39 +109,68 @@ template <typename T, size_t S>
 struct QuickSortShift3Way {
 	static const std::string name() { return "QuickSortShift3Way"; }
 
-	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	static void quickSort(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
 		if (rightBound <= leftBound)
 			return;
 
+		// Swap pivot element to the end
 		size_t pivotIndex = (leftBound + rightBound) >> 1;
+		std::swap(array[pivotIndex], array[rightBound]);
 
-		size_t left = leftBound;
-		size_t right = rightBound;
-		T pivotVal = array[pivotIndex];
-		size_t i = leftBound;
+		int i = leftBound - 1;
+		int j = rightBound;
+		int p = leftBound - 1;
+		int q = rightBound;
+		T v = array[rightBound];
 
-		while (i <= right)
+		for (;;)
 		{
-			if (array[i] < pivotVal)
+			while (array[++i] < v);
+
+			while (v < array[--j])
 			{
-				std::swap(array[left++], array[i++]);
+				if (j == leftBound)
+					break;
 			}
-			else if (array[i] > pivotVal)
+			if (i >= j)
+				break;
+
+			std::swap(array[i], array[j]);
+
+			if (array[i] == v)
 			{
-				std::swap(array[i], array[right--]);
+				p++;
+				std::swap(array[p], array[i]);
 			}
-			else
+
+			if (array[j] == v)
 			{
-				i++;
+				q--;
+				std::swap(array[j], array[q]);
 			}
 		}
+		std::swap(array[i], array[rightBound]);
+		j = i - 1;
+		i = i + 1;
 
-		if (leftBound < left)
-			sortInternal(array, leftBound, left - 1);
+		for (int k = leftBound; k < p; k++, j--)
+		{
+			std::swap(array[k], array[j]);
 
-		if (right < rightBound)
-			sortInternal(array, right + 1, rightBound);
+		}
+
+		for (int k = rightBound - 1; k > q; k--, i++)
+		{
+			std::swap(array[k], array[i]);			
+
+		}
+
+		if (i > 0)
+			quickSort(array, i, rightBound);
+
+		if (j > 0)
+			quickSort(array, leftBound, j);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -146,16 +178,15 @@ struct QuickSortShift3Way {
 		if (S <= 1)
 			return;
 
-		sortInternal(array, 0, S - 1);
+		quickSort(array, 0, S - 1);
 	}
 };
 
-
 template <typename T, size_t S>
 struct QuickSort3WayHybrid {
-	static const std::string name() { return "QuickSortHybrid"; }
+	static const std::string name() { return "QuickSort3WayHybrid"; }
 
-	static void sortInsertion(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	static void insertionSort(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
 		size_t i, j;
 		for (i = leftBound; i <= rightBound; i++){
@@ -169,14 +200,37 @@ struct QuickSort3WayHybrid {
 		}
 	}
 
-	static void sortInternal(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	static void merge(std::array<T, S> &array, std::array<T, S> *tmp,
+		size_t start, size_t middle, size_t end)
+	{
+		auto left = start;
+		auto right = middle;
+
+		for (auto j = left; j < end; j++)
+		{
+			if (left < middle && (right >= end || array[left] <= array[right]))
+			{
+				(*tmp)[j] = array[left];
+				left++;
+			}
+			else
+			{
+				(*tmp)[j] = array[right];
+				right++;
+			}
+		}
+
+		std::copy(tmp->begin() + start, tmp->begin() + end, array.begin() + start);
+	}
+
+	static void quickSort(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
 		if (rightBound <= leftBound)
 			return;
 
 		if (rightBound - leftBound < 9)
 		{
-			sortInsertion(array, leftBound, rightBound);
+			insertionSort(array, leftBound, rightBound);
 			return;
 		}
 
@@ -203,11 +257,27 @@ struct QuickSort3WayHybrid {
 			}
 		}
 
+		if (leftBound < left && right + 1 < rightBound)
+		{
+			size_t leftSize = leftBound - left;
+			size_t rightSize = right + 1 - rightBound;
+
+
+			if (leftSize >= rightSize * 1.5 || rightSize >= leftSize * 1.5)
+			{
+				auto tmp = std::make_shared<std::array<T, S>>(array);
+				QuickSortShift<T, S>::quickSort(array, leftBound, left - 1);
+				QuickSortShift<T, S>::quickSort(array, right + 1, rightBound);
+				MergeSortBottomUp<T, S>::merge(array, tmp.get(), leftBound, (left + right) / 2, rightBound);
+				return;
+			}
+		}
+
 		if (leftBound < left)
-			sortInternal(array, leftBound, left - 1);
+			quickSort(array, leftBound, left - 1);
 
 		if (right + 1 < rightBound)
-			sortInternal(array, right + 1, rightBound);
+			quickSort(array, right + 1, rightBound);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -215,6 +285,6 @@ struct QuickSort3WayHybrid {
 		if (S <= 1)
 			return;
 
-		sortInternal(array, 0, S - 1);
+		quickSort(array, 0, S - 1);
 	}
 };
