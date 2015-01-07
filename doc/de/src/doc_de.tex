@@ -58,7 +58,7 @@ Der Quicksort Algorithmus (vom englischen \textit{quick}, also `schnell') ist ei
 Im Durchschnitt kommt Quicksort mit $\mathcal{O}(n\log{}n)$ Vergleichen aus, im schlimmsten Fall $\mathcal{O}(n^2)$. In der Praxis ist Quicksort meist schneller als andere $\mathcal{O}(n\log{}n)$ Algorithmen. Auch sein sequentieller Speicherzugriff zusammen mit seiner sehr kurzen Schleife ist prädestiniert um von dem Prozessorcache zu profitieren.
 
 \paragraph{Beispiel} 
-\imagewrap{0.4}{graphs/quicksort.png}{Quicksort Beispiel}
+\imagewrap{0.45}{graphs/quicksort.png}{Quicksort Beispiel}
 \textbf{Schritt 1:} Als Pivot wird der Mittelpunkt der Folge genommen, hier die \textit{4}. Alle Werte kleiner als des Pivots werden auf die linke Seite verschoben, alle Werte größer des Pivots auf die rechte Seite. Danach wird die Folge in der Mitte partitioniert.
 
 \textbf{Schritt 2 und Schritt 3:} Für alle Partitionen wird Schritt 1 wiederholt bis jede Partition nur noch aus einem Element besteht.
@@ -67,9 +67,12 @@ Im Durchschnitt kommt Quicksort mit $\mathcal{O}(n\log{}n)$ Vergleichen aus, im 
 
 \paragraph{Variation: Shiftoperator statt Division} Bei dieser Variante wird die Mitte der Partition nicht durch eine Division durch 2 ermittelt sondern durch einen Rechtsshift um 1.
 
-\paragraph{Variation: 3-way-partitioning mit Shiftoperator}
+\paragraph{Variation: 3-way-partitioning mit Shiftoperator} Bei dem 3-way-partitioning-Ansatz wird Quicksort um eine dritte Partition erweitert. So werden alle Elemente die den selben Wert wie das Pivotelement haben in die Mitte verschoben. Sollten keine Elemente einen gleichen Wert haben ist der Algorithmus nicht langsamer als das normale Quicksort.
 
-\paragraph{Variation: Hybrider Ansatz}
+\paragraph{Variation: Hybrider Ansatz} Bei dem hybriden Ansatz soll der 3-way-partitioning-Algorithmus genommen werden und um Aspekte von Insertion Sort und Mergesort erweitert werden. Wenn eine Partition kleiner als ein bestimmter Schwellwert ist so wird für die gesamte Partition Insertion Sort benutzt und keinerlei Rekursion mehr verwendet. Sollte dies jedoch nicht der Fall sein, so wird der 3-way-partitioning-Algorithmus benutzt. Vor dem rekursivem Aufruf wird jedoch überprüft, ob die Anzahl der Elemente der linken und rechten Partitionen ähnlich sind. Sollte der Unterschied zu groß sein so werden die Partitionen jeweils zwar mit einem rekursiven Aufruf sortiert, jedoch danach per Mergesort-Merge zusammengeführt. Die Rekursion vertieft in diesem Fall nicht weiter.
+
+\clearpage
+
 \section{Mergesort}
 Das Mergesort Sortierungsverfahren arbeitet nach dem Prinzip des \textit{teilen und herrschen} (\textit{divide and conquer}). Auch dieser Algorithmus sortiert Folgen stabil. Es betrachtet die unsortierte Folge als eine Liste von Teilfolgen, welche am Anfang nur ein Element besitzen. Diese Teilfolgen werden dann im Reißverschlussverfahren zu größeren Folgen zusammengefügt (das \textit{mergen}). Dabei kann Mergesort davon ausgehen, dass jede Teilfolge sortiert ist. Dies ist im ersten Schritt sichergestellt, da jede Teilfolge nur aus ein Element besteht und somit schon sortiert ist. Um nun zwei sortierte Teilfolgen zusammenzufügen müssen diese Teilfolgen jeweils von links nach rechts durchgegangen werden und jeweils der kleinere Wert aus der Teilfolge genommen und in die neue Folge hinten angefügt werden. Dies wird solange wiederholt, bis beide Teilfolgen leer sind. Somit entsteht eine neue, sortierte Folge. Wird dies nun für alle Teilfolgen wiederholt bis es nur noch eine Folge gibt so ist diese gesamte Folge sortiert.
 
@@ -78,13 +81,26 @@ Die Arbeit des Aufteilen einer unsortierten Folge ist trivial, das eigentliche Z
 Mergesort benötigt sowohl im durchschnitt als auch im besten und schlechtesten Fall stets $\mathcal{O}(n\log{}n)$ Vergleiche.
 
 \paragraph{Beispiel}
-\imagewrap{0.4}{graphs/mergesort.png}{Mergesort}
+\imagewrap{0.45}{graphs/mergesort.png}{Mergesort}
+\textbf{Schritt 1:} Die unsortierte Folge wird als Teilfolge mit jeweils einem Element angesehen.
 
-\paragraph{Variation: Natural Mergesort} Bei dem Natural Mergesort wird zuerst versucht natürlich vorkommende Teilstücke in der Folge zu finden, die bereits sortiert sind. Durch das Ausnutzen dieser Sortierung lässt sich gegebenenfalls Schritte des Mergesorts einsparen. Es können dabei sowohl aufsteigend als auch absteigend sortierte Teilfolgen benutzt werden (\textit{Bitonische Läufe}).
+\textbf{Schritt 2:} Jeweils zwei Teilfolgen werden zu einer neuen Teilfolge zusammengefügt. Dabei werden die einzelnen Elemente sortiert nacheinander an die neue Folge angehangen.
+
+\textbf{Schritt 3:} Da jede vorhergehende Teilfolge sortiert ist, kann auch hier wieder einfach die Elemente der vorhergehenden Teilfolgen sortiert an die neue Folge angehangen werden.
+
+\textbf{Schritt 4:} Es existiert nur noch eine Folge und der Algorithmus terminiert. Die Folge ist somit sortiert.
+
+\paragraph{Variation: Natural Mergesort} Bei dem Natural Mergesort wird zuerst versucht natürlich vorkommende Teilstücke in der eigentlich unsortierten Anfangsfolge zu finden, die bereits sortiert sind. Durch das Ausnutzen dieser Teilsortierung lassen sich gegebenenfalls Schritte des Mergesorts einsparen. Es können dabei sowohl aufsteigend als auch absteigend sortierte Teilfolgen benutzt werden (\textit{Bitonische Läufe}).
 
 \chapter{Zeitmessungen}
 Die Zeiten der einzelnen Messungen sind Durchschnittswerte von fünf unabhängigen Läufen mit jeweils unterschiedlichen Zufallsfolgen. Dabei wird pro Lauf jeder Algorithmus mit den gleichen Zufallsfolgen getestet. Die auf- und absteigenden Folgen unterscheiden sich nicht zwischen den Läufen.
 
+Alle Zeiten sind in Millisekunden angegeben.
+
+\clearpage
+\pagestyle{empty}
+\begin{landscape}
 \input{benchmark/benchmark.tex}
+\end{landscape}
 
 \end{document}
