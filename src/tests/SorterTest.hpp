@@ -53,11 +53,16 @@ namespace Tests
 
 		void test(std::function<void(std::array<T, RandomArray::Size>&)> f)
 		{
-			for(unsigned int i = 0; i <= 25; i++)
+			for(unsigned int i = 0; i < 50; i++)
 			{
 				this->generateArray();
 				f(*this->array.get());
-				EXPECT_TRUE(Tests::isSorted(*this->array.get()));
+				bool sorted = Tests::isSorted(*this->array.get());
+				EXPECT_TRUE(sorted);
+
+				// Fast exit if test failed
+				if (sorted == false)
+					break;
 			}
 		}
 	};
