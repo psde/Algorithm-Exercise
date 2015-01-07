@@ -5,6 +5,7 @@ list(APPEND SRC_ALGORITHMS
 	algorithms/quicksort.hpp
 	algorithms/shellsort.hpp
 	algorithms/mergesort.hpp
+	algorithms/heapsort.hpp
 )
 SOURCE_GROUP("Algorithms" FILES ${SRC_ALGORITHMS})
 

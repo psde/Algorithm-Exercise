@@ -26,4 +26,7 @@ namespace Tests
 
 	// ShellSort
 	SORTER_TEST_CASE(ShellSort)
+
+	// Heapsort
+	SORTER_TEST_CASE(Heapsort)
 }

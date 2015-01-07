@@ -4,3 +4,4 @@
 #include "algorithms/quicksort.hpp"
 #include "algorithms/shellsort.hpp"
 #include "algorithms/mergesort.hpp"
+#include "algorithms/heapsort.hpp"
