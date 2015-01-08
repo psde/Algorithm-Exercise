@@ -57,7 +57,7 @@ namespace Benchmarks
 			auto ary = std::unique_ptr<std::array<double, S>>(new std::array<double, S>());
 
 			volatile double tmp = 0;
-			for (volatile int i = 0; i < S; i++)
+			for (volatile unsigned int i = 0; i < S; i++)
 			{
 				tmp = i;
 				(*ary)[i] = tmp;
@@ -205,7 +205,7 @@ namespace Benchmarks
 			stream << "\\begin{tabular}{|l|";
 			for (const auto &kv : map)
 			{
-				for (const auto &ms : kv.second)
+				for(size_t i=0; i<kv.second.size(); i++)
 				{
 					stream << "l|";
 				}

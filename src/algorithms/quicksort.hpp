@@ -2,6 +2,7 @@
 
 #include <array>
 #include <string>
+#include <memory>
 
 #include "algorithms/mergesort.hpp"
 
@@ -109,7 +110,7 @@ template <typename T, size_t S>
 struct QuickSortShift3Way {
 	static const std::string name() { return "QuickSortShift3Way"; }
 
-	static void quickSort(std::array<T, S> &array, size_t leftBound, size_t rightBound)
+	static void quickSort(std::array<T, S> &array, int leftBound, int rightBound)
 	{
 		if (rightBound <= leftBound)
 			return;
@@ -265,9 +266,10 @@ struct QuickSort3WayHybrid {
 
 			if (leftSize >= rightSize * 1.5 || rightSize >= leftSize * 1.5)
 			{
-				auto tmp = std::make_shared<std::array<T, S>>(array);
 				QuickSortShift<T, S>::quickSort(array, leftBound, left - 1);
 				QuickSortShift<T, S>::quickSort(array, right + 1, rightBound);
+
+				auto tmp = std::make_shared<std::array<T, S>>(array);
 				MergeSortBottomUp<T, S>::merge(array, tmp.get(), leftBound, (left + right) / 2, rightBound);
 				return;
 			}
