@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <algorithm>
 #include <random>
 #include <memory>
 #include <functional>
@@ -11,11 +12,25 @@ namespace Tests
 {
 	// Returns 'true' if an array is sorted, false otherwise
 	template<class T, size_t S>
-	bool isSorted(std::array<T, S> arr)
+	bool isSorted(std::array<T, S> ary)
 	{
 		for (size_t i = 1; i < S; ++i)
 		{
-			if (arr[i] < arr[i - 1])
+			if (ary[i] < ary[i - 1])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	template<class T, size_t S>
+	bool hasSameElements(std::array<T, S> original, std::array<T, S> modified)
+	{
+		for(const T& elem : original)
+		{
+			//if(modified.find(elem) == modified.end())
+			if(std::find(modified.begin(), modified.end(), elem) == modified.end())
 			{
 				return false;
 			}

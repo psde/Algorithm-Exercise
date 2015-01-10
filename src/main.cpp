@@ -25,8 +25,8 @@ int main(int argc, char** argv)
 	::testing::InitGoogleTest(&argc, argv);
 	int tests = RUN_ALL_TESTS();
 
-	std::cout << std::endl << "Benchmarking:" << std::endl;
-	auto b = Benchmarks::Benchmark();
+	//std::cout << std::endl << "Benchmarking:" << std::endl;
+	//auto b = Benchmarks::Benchmark();
 	
 	return tests;
 }

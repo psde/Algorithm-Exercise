@@ -18,13 +18,17 @@ namespace Tests
 
 	// All types that are used in testing
 	using SortingTypes = ::testing::Types<int, float, double, std::string>;
+	using SpecialTypes = ::testing::Types<int>;
 
-	// Register types for the three test cases
+	// Register types for the generic test cases
 	TYPED_TEST_CASE(RandomArray, Tests::SortingTypes);
 	TYPED_TEST_CASE(AscendingArray, Tests::SortingTypes);
 	TYPED_TEST_CASE(DescendingArray, Tests::SortingTypes);
 	TYPED_TEST_CASE(EmptyArray, Tests::SortingTypes);
 	TYPED_TEST_CASE(OneSizedArray, Tests::SortingTypes);
+
+	// Register types for specialized test cases
+	TYPED_TEST_CASE(InsertionSortTest, Tests::SpecialTypes);
 
 	// Base class for all test fixtures
 	template<class T, size_t S>
@@ -34,6 +38,12 @@ namespace Tests
 		virtual void generateArray() = 0;
 		static const size_t Size = S;
 		std::unique_ptr<std::array<T, Size>> array;
+
+		std::unique_ptr<std::array<T, S>> copyArray()
+		{
+			auto tmp = std::unique_ptr<std::array<T, S>>(new std::array<T, S>(*this->array.get()));
+			return std::move(tmp);
+		}
 
 		virtual void SetUp()
 		{
@@ -56,9 +66,12 @@ namespace Tests
 			for(unsigned int i = 0; i < 50; i++)
 			{
 				this->generateArray();
-				f(*this->array.get());
-				bool sorted = Tests::isSorted(*this->array.get());
+
+				auto tmp = ArrayTest<T, ArraySize>::copyArray();
+				f(*tmp.get());
+				bool sorted = Tests::isSorted(*tmp.get());
 				EXPECT_TRUE(sorted);
+				EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
 
 				// Fast exit if test failed
 				if (sorted == false)
@@ -79,9 +92,11 @@ namespace Tests
 
 		void test(std::function<void(std::array<T, AscendingArray::Size>&)> f)
 		{
-			EXPECT_TRUE(Tests::isSorted(*this->array.get()));
-			f(*this->array.get());
-			EXPECT_TRUE(Tests::isSorted(*this->array.get()));
+			auto tmp = ArrayTest<T, ArraySize>::copyArray();
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
 		}
 	};
 
@@ -97,9 +112,11 @@ namespace Tests
 
 		void test(std::function<void(std::array<T, DescendingArray::Size>&)> f)
 		{
-			EXPECT_FALSE(Tests::isSorted(*this->array.get()));
-			f(*this->array.get());
-			EXPECT_TRUE(Tests::isSorted(*this->array.get()));
+			auto tmp = ArrayTest<T, ArraySize>::copyArray();
+			EXPECT_FALSE(Tests::isSorted(*tmp.get()));
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
 		}
 	};
 
@@ -134,6 +151,26 @@ namespace Tests
 			EXPECT_TRUE(Tests::isSorted(*this->array.get()));
 		}
 	};
+
+	template<class T>
+	class InsertionSortTest : public ArrayTest<T, 5>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
+				{1, 2, 3, 4, 5}));
+		}
+
+		void test(std::function<void(std::array<T, InsertionSortTest::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 5>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
 }
 
 // Macro for testing different sorters
@@ -157,4 +194,9 @@ TYPED_TEST(EmptyArray, CLASS) \
 TYPED_TEST(OneSizedArray, CLASS) \
 { \
 	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(InsertionSortTest, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
 }
+
