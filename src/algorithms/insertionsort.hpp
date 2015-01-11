@@ -9,10 +9,12 @@ struct InsertionSort {
 	static void sort(std::array<T, S> &array)
 	{
 		size_t i, j;
-		for (i = 0; i < S; i++){
+		for (i = 0; i < S; i++)
+		{
 			j = i;
 			T t = array[j];
-			while (j > 0 && array[j - 1] > t){
+			while (j > 0 && array[j - 1] > t)
+			{
 				array[j] = array[j - 1];
 				j--;
 			}

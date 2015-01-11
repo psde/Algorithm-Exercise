@@ -28,7 +28,19 @@ namespace Tests
 	TYPED_TEST_CASE(OneSizedArray, Tests::SortingTypes);
 
 	// Register types for specialized test cases
-	TYPED_TEST_CASE(InsertionSortTest, Tests::SpecialTypes);
+	TYPED_TEST_CASE(InsertionSortGuardMinimumFront, Tests::SpecialTypes);
+	TYPED_TEST_CASE(InsertionSortGuardMinimumBack, Tests::SpecialTypes);
+	TYPED_TEST_CASE(MergeSortOdd, Tests::SpecialTypes);
+	TYPED_TEST_CASE(MergeSortAlwaysLeft, Tests::SpecialTypes);
+	TYPED_TEST_CASE(MergeSortAlwaysRight, Tests::SpecialTypes);
+	TYPED_TEST_CASE(MergeSortNaturalBitonic, Tests::SpecialTypes);
+	TYPED_TEST_CASE(MergeSortNaturalBitonicInverted, Tests::SpecialTypes);
+	TYPED_TEST_CASE(MergeSortNaturalBitonic2, Tests::SpecialTypes);
+	TYPED_TEST_CASE(MergeSortNaturalBitonic2Inverted, Tests::SpecialTypes);
+	TYPED_TEST_CASE(QuickSortAllLeft, Tests::SpecialTypes);
+	TYPED_TEST_CASE(QuickSortAllRight, Tests::SpecialTypes);
+	TYPED_TEST_CASE(QuickSortAllEqual, Tests::SpecialTypes);
+	TYPED_TEST_CASE(QuickSort3WayAlmostEqual, Tests::SpecialTypes);
 	TYPED_TEST_CASE(QuickSortHybridInsertion, Tests::SpecialTypes);
 	TYPED_TEST_CASE(QuickSortHybridMerge, Tests::SpecialTypes);
 	
@@ -73,10 +85,12 @@ namespace Tests
 				f(*tmp.get());
 				bool sorted = Tests::isSorted(*tmp.get());
 				EXPECT_TRUE(sorted);
-				EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+
+				bool sameElements = Tests::hasSameElements(*this->array.get(), *tmp.get());
+				EXPECT_TRUE(sameElements);
 
 				// Fast exit if test failed
-				if (sorted == false)
+				if (sorted == false || sameElements == false)
 					break;
 			}
 		}
@@ -122,6 +136,7 @@ namespace Tests
 		}
 	};
 
+	// Check if an empty array is handled
 	template<class T>
 	class EmptyArray : public ArrayTest<T, 0>
 	{
@@ -138,6 +153,7 @@ namespace Tests
 		}
 	};
 
+	// Check if an array with size one is handled
 	template<class T>
 	class OneSizedArray : public ArrayTest<T, 1>
 	{
@@ -155,16 +171,16 @@ namespace Tests
 	};
 
 	template<class T>
-	class InsertionSortTest : public ArrayTest<T, 5>
+	class InsertionSortGuardMinimumFront : public ArrayTest<T, 5>
 	{
 	protected:
 		void generateArray()
 		{
 			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
-				{1, 2, 3, 4, 5}));
+				{ 1, 2, 3, 3, 2 }));
 		}
 
-		void test(std::function<void(std::array<T, InsertionSortTest::Size>&)> f)
+		void test(std::function<void(std::array<T, InsertionSortGuardMinimumFront::Size>&)> f)
 		{
 			auto tmp = ArrayTest<T, 5>::copyArray();
 			f(*tmp.get());
@@ -174,13 +190,242 @@ namespace Tests
 	};
 
 	template<class T>
+	class InsertionSortGuardMinimumBack : public ArrayTest<T, 5>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
+				{ 2, 3, 3, 2, 1 }));
+		}
+
+		void test(std::function<void(std::array<T, InsertionSortGuardMinimumBack::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 5>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};	
+	
+	template<class T>
+	class MergeSortOdd : public ArrayTest<T, 3>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 3>>(new std::array<T, 3>(
+			{ 1, 2, 3 }));
+		}
+
+		void test(std::function<void(std::array<T, MergeSortOdd::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 3>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	template<class T>
+	class MergeSortAlwaysLeft : public ArrayTest<T, 6>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 6>>(new std::array<T, 6>(
+			{ 2, 2, 3, 3, 4, 4 }));
+		}
+
+		void test(std::function<void(std::array<T, MergeSortAlwaysLeft::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 6>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	template<class T>
+	class MergeSortAlwaysRight : public ArrayTest<T, 6>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 6>>(new std::array<T, 6>(
+			{ 4, 4, 3, 3, 2, 2 }));
+		}
+
+		void test(std::function<void(std::array<T, MergeSortAlwaysRight::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 6>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+	
+	template<class T>
+	class MergeSortNaturalBitonic : public ArrayTest<T, 6>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 6>>(new std::array<T, 6>(
+			{ 1, 2, 3, 3, 2, 1 }));
+		}
+
+		void test(std::function<void(std::array<T, MergeSortNaturalBitonic::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 6>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	template<class T>
+	class MergeSortNaturalBitonicInverted : public ArrayTest<T, 6>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 6>>(new std::array<T, 6>(
+			{ 3, 2, 1, 1, 2, 3 }));
+		}
+
+		void test(std::function<void(std::array<T, MergeSortNaturalBitonicInverted::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 6>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	template<class T>
+	class MergeSortNaturalBitonic2 : public ArrayTest<T, 5>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
+			{ 1, 2, 3, 2, 1 }));
+		}
+
+		void test(std::function<void(std::array<T, MergeSortNaturalBitonic2::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 5>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	template<class T>
+	class MergeSortNaturalBitonic2Inverted : public ArrayTest<T, 5>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
+			{ 3, 2, 1, 2, 3 }));
+		}
+
+		void test(std::function<void(std::array<T, MergeSortNaturalBitonic2Inverted::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 5>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	template<class T>
+	class QuickSortAllLeft : public ArrayTest<T, 5>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
+			{ 3, 3, 4, 3, 3}));
+		}
+
+		void test(std::function<void(std::array<T, QuickSortAllLeft::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 5>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	template<class T>
+	class QuickSortAllRight : public ArrayTest<T, 5>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
+			{ 3, 3, 2, 3, 3 }));
+		}
+
+		void test(std::function<void(std::array<T, QuickSortAllRight::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 5>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	template<class T>
+	class QuickSortAllEqual : public ArrayTest<T, 5>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
+			{ 3, 3, 3, 3, 3 }));
+		}
+
+		void test(std::function<void(std::array<T, QuickSortAllEqual::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 5>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+	
+	template<class T>
+	class QuickSort3WayAlmostEqual : public ArrayTest<T, 10>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 10>>(new std::array<T, 10>(
+			{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 1 }));
+		}
+
+		void test(std::function<void(std::array<T, QuickSort3WayAlmostEqual::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 10>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	// Small array so that hybrid quicksort will use insertion sort
+	template<class T>
 	class QuickSortHybridInsertion : public ArrayTest<T, 5>
 	{
 	protected:
 		void generateArray()
 		{
 			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
-			{ 1, 2, 3, 4, 5}));
+				{ 1, 2, 3, 4, 5 }));
 		}
 
 		void test(std::function<void(std::array<T, QuickSortHybridInsertion::Size>&)> f)
@@ -192,6 +437,7 @@ namespace Tests
 		}
 	};
 
+	// Unbalanced array so that hybrid quicksort will have to merge
 	template<class T>
 	class QuickSortHybridMerge : public ArrayTest<T, 15>
 	{
@@ -199,7 +445,7 @@ namespace Tests
 		void generateArray()
 		{
 			this->array = std::unique_ptr<std::array<T, 15>>(new std::array<T, 15>(
-			{1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}));
+				{ 0, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 }));
 		}
 
 		void test(std::function<void(std::array<T, QuickSortHybridMerge::Size>&)> f)
@@ -235,10 +481,58 @@ TYPED_TEST(OneSizedArray, CLASS) \
 { \
 	this->test(CLASS<TypeParam, this->Size>::sort); \
 } \
-TYPED_TEST(InsertionSortTest, CLASS) \
+TYPED_TEST(InsertionSortGuardMinimumFront, CLASS) \
 { \
 	this->test(CLASS<TypeParam, this->Size>::sort); \
-}\
+} \
+TYPED_TEST(InsertionSortGuardMinimumBack, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(MergeSortOdd, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(MergeSortAlwaysLeft, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(MergeSortAlwaysRight, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(MergeSortNaturalBitonic, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(MergeSortNaturalBitonicInverted, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(MergeSortNaturalBitonic2, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(MergeSortNaturalBitonic2Inverted, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(QuickSortAllLeft, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(QuickSortAllRight, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(QuickSortAllEqual, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(QuickSort3WayAlmostEqual, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
 TYPED_TEST(QuickSortHybridInsertion, CLASS) \
 { \
 	this->test(CLASS<TypeParam, this->Size>::sort); \
@@ -247,4 +541,4 @@ TYPED_TEST(QuickSortHybridMerge, CLASS) \
 { \
 	this->test(CLASS<TypeParam, this->Size>::sort); \
 }
-
+// Last Line is needed for macro!

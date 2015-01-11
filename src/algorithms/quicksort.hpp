@@ -139,12 +139,14 @@ struct QuickSortShift3Way {
 
 			std::swap(array[left], array[right]);
 
+			// Equal to left end
 			if (array[left] == v)
 			{
 				pLeft++;
 				std::swap(array[pLeft], array[left]);
 			}
 
+			// Equal to right end
 			if (array[right] == v)
 			{
 				pRight--;
@@ -155,6 +157,7 @@ struct QuickSortShift3Way {
 		right = left - 1;
 		left = left + 1;
 
+		// Equal partitions from end to middle
 		for (int k = leftBound; k < pLeft; k++, right--)
 		{
 			std::swap(array[k], array[right]);
@@ -290,7 +293,7 @@ struct QuickSort3WayHybrid {
 
 			if (leftSize >= rightSize * 5 || rightSize >= leftSize * 5)
 			{
-				QuickSortShift<T, S>::quickSort(array, leftBound, right );
+				QuickSortShift<T, S>::quickSort(array, leftBound, right);
 				QuickSortShift<T, S>::quickSort(array, left, rightBound);
 
 				auto tmp = std::make_shared<std::array<T, S>>(array);

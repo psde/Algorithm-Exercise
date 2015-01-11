@@ -23,10 +23,7 @@ namespace Tests
 	SORTER_TEST_CASE(QuickSortShift)
 	SORTER_TEST_CASE(QuickSortShift3Way)
 	SORTER_TEST_CASE(QuickSort3WayHybrid)
-
-	// ShellSort
-	SORTER_TEST_CASE(ShellSort)
-
+	
 	// Heapsort
 	SORTER_TEST_CASE(Heapsort)
 }
