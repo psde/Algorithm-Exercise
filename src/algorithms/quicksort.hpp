@@ -19,32 +19,32 @@ struct QuickSort {
 		size_t pivotIndex = (leftBound + rightBound) / 2;
 		std::swap(array[pivotIndex], array[rightBound]);
 
-		size_t i = leftBound;
-		size_t j = rightBound;
+		size_t left = leftBound;
+		size_t right = rightBound;
 		T v = array[rightBound];
-		
+
 		for (;;)
 		{
-			while (array[i] < v) {
-				i++;
+			while (array[left] < v) {
+				left++;
 			}
 
-			while (v < array[--j])
+			while (v < array[--right])
 			{
-				if (j == leftBound)
+				if (right == leftBound)
 					break;
 			}
-			if (i >= j)
+			if (left >= right)
 				break;
 
-			std::swap(array[i], array[j]);
+			std::swap(array[left], array[right]);
 		}
-		std::swap(array[i], array[rightBound]);
-		
-		if (i != 0)
-			quickSort(array, leftBound, i - 1);
+		std::swap(array[left], array[rightBound]);
 
-		quickSort(array, i + 1, rightBound);
+		if (left != 0)
+			quickSort(array, leftBound, left - 1);
+
+		quickSort(array, left + 1, rightBound);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -69,32 +69,32 @@ struct QuickSortShift {
 		size_t pivotIndex = (leftBound + rightBound) >> 1;
 		std::swap(array[pivotIndex], array[rightBound]);
 
-		size_t i = leftBound;
-		size_t j = rightBound;
+		size_t left = leftBound;
+		size_t right = rightBound;
 		T v = array[rightBound];
 
 		for (;;)
 		{
-			while (array[i] < v) {
-				i++;
+			while (array[left] < v) {
+				left++;
 			}
 
-			while (v < array[--j])
+			while (v < array[--right])
 			{
-				if (j == leftBound)
+				if (right == leftBound)
 					break;
 			}
-			if (i >= j)
+			if (left >= right)
 				break;
 
-			std::swap(array[i], array[j]);
+			std::swap(array[left], array[right]);
 		}
-		std::swap(array[i], array[rightBound]);
+		std::swap(array[left], array[rightBound]);
 
-		if (i != 0)
-			quickSort(array, leftBound, i - 1);
+		if (left != 0)
+			quickSort(array, leftBound, left - 1);
 
-		quickSort(array, i + 1, rightBound);
+		quickSort(array, left + 1, rightBound);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -119,57 +119,57 @@ struct QuickSortShift3Way {
 		size_t pivotIndex = (leftBound + rightBound) >> 1;
 		std::swap(array[pivotIndex], array[rightBound]);
 
-		int i = leftBound - 1;
-		int j = rightBound;
-		int p = leftBound - 1;
-		int q = rightBound;
+		int left = leftBound - 1;
+		int right = rightBound;
+		int pLeft = leftBound - 1;
+		int pRight = rightBound;
 		T v = array[rightBound];
 
 		for (;;)
 		{
-			while (array[++i] < v);
+			while (array[++left] < v);
 
-			while (v < array[--j])
+			while (v < array[--right])
 			{
-				if (j == leftBound)
+				if (right == leftBound)
 					break;
 			}
-			if (i >= j)
+			if (left >= right)
 				break;
 
-			std::swap(array[i], array[j]);
+			std::swap(array[left], array[right]);
 
-			if (array[i] == v)
+			if (array[left] == v)
 			{
-				p++;
-				std::swap(array[p], array[i]);
+				pLeft++;
+				std::swap(array[pLeft], array[left]);
 			}
 
-			if (array[j] == v)
+			if (array[right] == v)
 			{
-				q--;
-				std::swap(array[j], array[q]);
+				pRight--;
+				std::swap(array[right], array[pRight]);
 			}
 		}
-		std::swap(array[i], array[rightBound]);
-		j = i - 1;
-		i = i + 1;
+		std::swap(array[left], array[rightBound]);
+		right = left - 1;
+		left = left + 1;
 
-		for (int k = leftBound; k < p; k++, j--)
+		for (int k = leftBound; k < pLeft; k++, right--)
 		{
-			std::swap(array[k], array[j]);
+			std::swap(array[k], array[right]);
 		}
 
-		for (int k = rightBound - 1; k > q; k--, i++)
+		for (int k = rightBound - 1; k > pRight; k--, left++)
 		{
-			std::swap(array[k], array[i]);			
+			std::swap(array[k], array[left]);			
 		}
 
-		if (i > 0)
-			quickSort(array, i, rightBound);
+		if (left > 0)
+			quickSort(array, left, rightBound);
 
-		if (j > 0)
-			quickSort(array, leftBound, j);
+		if (right > 0)
+			quickSort(array, leftBound, right);
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -237,73 +237,73 @@ struct QuickSort3WayHybrid {
 		size_t pivotIndex = (leftBound + rightBound) >> 1;
 		std::swap(array[pivotIndex], array[rightBound]);
 
-		int i = leftBound - 1;
-		int j = rightBound;
-		int p = leftBound - 1;
-		int q = rightBound;
+		int left = leftBound - 1;
+		int right = rightBound;
+		int pRight = leftBound - 1;
+		int pLeft = rightBound;
 		T v = array[rightBound];
 
 		for (;;)
 		{
-			while (array[++i] < v);
+			while (array[++left] < v);
 
-			while (v < array[--j])
+			while (v < array[--right])
 			{
-				if (j == leftBound)
+				if (right == leftBound)
 					break;
 			}
-			if (i >= j)
+			if (left >= right)
 				break;
 
-			std::swap(array[i], array[j]);
+			std::swap(array[left], array[right]);
 
-			if (array[i] == v)
+			if (array[left] == v)
 			{
-				p++;
-				std::swap(array[p], array[i]);
+				pRight++;
+				std::swap(array[pRight], array[left]);
 			}
 
-			if (array[j] == v)
+			if (array[right] == v)
 			{
-				q--;
-				std::swap(array[j], array[q]);
+				pLeft--;
+				std::swap(array[right], array[pLeft]);
 			}
 		}
-		std::swap(array[i], array[rightBound]);
-		j = i - 1;
-		i = i + 1;
+		std::swap(array[left], array[rightBound]);
+		right = left - 1;
+		left = left + 1;
 
-		for (int k = leftBound; k < p; k++, j--)
+		for (int k = leftBound; k < pRight; k++, right--)
 		{
-			std::swap(array[k], array[j]);
+			std::swap(array[k], array[right]);
 		}
 
-		for (int k = rightBound - 1; k > q; k--, i++)
+		for (int k = rightBound - 1; k > pLeft; k--, left++)
 		{
-			std::swap(array[k], array[i]);
+			std::swap(array[k], array[left]);
 		}
 
-		if (i > 0 && j > 0)
+		if (left > 0 && right > 0)
 		{
-			size_t leftSize = leftBound - j;
-			size_t rightSize = i - rightBound;
+			size_t leftSize = leftBound - right;
+			size_t rightSize = left - rightBound;
 
 			if (leftSize >= rightSize * 5 || rightSize >= leftSize * 5)
 			{
-				QuickSortShift<T, S>::quickSort(array, leftBound, j );
-				QuickSortShift<T, S>::quickSort(array, i, rightBound);
+				QuickSortShift<T, S>::quickSort(array, leftBound, right );
+				QuickSortShift<T, S>::quickSort(array, left, rightBound);
 
 				auto tmp = std::make_shared<std::array<T, S>>(array);
-				MergeSortBottomUp<T, S>::merge(array, tmp.get(), leftBound, (i + j) / 2, rightBound);
+				MergeSortBottomUp<T, S>::merge(array, tmp.get(), leftBound, (left + right) / 2, rightBound);
 				return;
 			}
 		}
 
-		if (i > 0)
-			quickSort(array, i, rightBound);
+		if (left > 0)
+			quickSort(array, left, rightBound);
 
-		if (j > 0)
-			quickSort(array, leftBound, j);
+		if (right > 0)
+			quickSort(array, leftBound, right);
 	}
 
 	static void sort(std::array<T, S> &array)
