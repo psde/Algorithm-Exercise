@@ -29,7 +29,9 @@ namespace Tests
 
 	// Register types for specialized test cases
 	TYPED_TEST_CASE(InsertionSortTest, Tests::SpecialTypes);
-
+	TYPED_TEST_CASE(QuickSortHybridInsertion, Tests::SpecialTypes);
+	TYPED_TEST_CASE(QuickSortHybridMerge, Tests::SpecialTypes);
+	
 	// Base class for all test fixtures
 	template<class T, size_t S>
 	class ArrayTest : public testing::Test
@@ -171,6 +173,44 @@ namespace Tests
 		}
 	};
 
+	template<class T>
+	class QuickSortHybridInsertion : public ArrayTest<T, 5>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 5>>(new std::array<T, 5>(
+			{ 1, 2, 3, 4, 5}));
+		}
+
+		void test(std::function<void(std::array<T, QuickSortHybridInsertion::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 5>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
+	template<class T>
+	class QuickSortHybridMerge : public ArrayTest<T, 15>
+	{
+	protected:
+		void generateArray()
+		{
+			this->array = std::unique_ptr<std::array<T, 15>>(new std::array<T, 15>(
+			{1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}));
+		}
+
+		void test(std::function<void(std::array<T, QuickSortHybridMerge::Size>&)> f)
+		{
+			auto tmp = ArrayTest<T, 15>::copyArray();
+			f(*tmp.get());
+			EXPECT_TRUE(Tests::isSorted(*tmp.get()));
+			EXPECT_TRUE(Tests::hasSameElements(*this->array.get(), *tmp.get()));
+		}
+	};
+
 }
 
 // Macro for testing different sorters
@@ -196,6 +236,14 @@ TYPED_TEST(OneSizedArray, CLASS) \
 	this->test(CLASS<TypeParam, this->Size>::sort); \
 } \
 TYPED_TEST(InsertionSortTest, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+}\
+TYPED_TEST(QuickSortHybridInsertion, CLASS) \
+{ \
+	this->test(CLASS<TypeParam, this->Size>::sort); \
+} \
+TYPED_TEST(QuickSortHybridMerge, CLASS) \
 { \
 	this->test(CLASS<TypeParam, this->Size>::sort); \
 }
