@@ -29,7 +29,6 @@ namespace Tests
 	{
 		for(const T& elem : original)
 		{
-			//if(modified.find(elem) == modified.end())
 			if(std::find(modified.begin(), modified.end(), elem) == modified.end())
 			{
 				return false;
@@ -89,7 +88,7 @@ namespace Tests
 		{
 			std::random_device rd;
 			std::mt19937 gen(rd());
-			std::uniform_int_distribution<> wordLengthRand(0, S);
+			std::uniform_int_distribution<> wordLengthRand(0, 30);
 			std::uniform_int_distribution<> charRand(26, 26 + 'a');
 
 			std::unique_ptr<std::array<std::string, S>> ary(new std::array<std::string, S>());
