@@ -110,7 +110,7 @@ template <typename T, size_t S>
 struct QuickSortShift3Way {
 	static const std::string name() { return "QuickSortShift3Way"; }
 
-	static void quickSort(std::array<T, S> &array, int leftBound, int rightBound)
+	static void quickSort(std::array<T, S> &array, size_t leftBound, size_t rightBound)
 	{
 		if (rightBound <= leftBound)
 			return;
@@ -158,13 +158,11 @@ struct QuickSortShift3Way {
 		for (int k = leftBound; k < p; k++, j--)
 		{
 			std::swap(array[k], array[j]);
-
 		}
 
 		for (int k = rightBound - 1; k > q; k--, i++)
 		{
 			std::swap(array[k], array[i]);			
-
 		}
 
 		if (i > 0)
@@ -235,51 +233,77 @@ struct QuickSort3WayHybrid {
 			return;
 		}
 
+		// Swap pivot element to the end
 		size_t pivotIndex = (leftBound + rightBound) >> 1;
+		std::swap(array[pivotIndex], array[rightBound]);
 
-		size_t left = leftBound;
-		size_t right = rightBound;
-		T pivotVal = array[pivotIndex];
-		size_t i = leftBound;
+		int i = leftBound - 1;
+		int j = rightBound;
+		int p = leftBound - 1;
+		int q = rightBound;
+		T v = array[rightBound];
 
-		while (i <= right)
+		for (;;)
 		{
-			if (array[i] < pivotVal)
+			while (array[++i] < v);
+
+			while (v < array[--j])
 			{
-				std::swap(array[left++], array[i++]);
+				if (j == leftBound)
+					break;
 			}
-			else if (array[i] > pivotVal)
+			if (i >= j)
+				break;
+
+			std::swap(array[i], array[j]);
+
+			if (array[i] == v)
 			{
-				std::swap(array[i], array[right--]);
+				p++;
+				std::swap(array[p], array[i]);
 			}
-			else
+
+			if (array[j] == v)
 			{
-				i++;
+				q--;
+				std::swap(array[j], array[q]);
 			}
 		}
+		std::swap(array[i], array[rightBound]);
+		j = i - 1;
+		i = i + 1;
 
-		if (leftBound < left && right + 1 < rightBound)
+		for (int k = leftBound; k < p; k++, j--)
 		{
-			size_t leftSize = leftBound - left;
-			size_t rightSize = right + 1 - rightBound;
+			std::swap(array[k], array[j]);
+		}
 
+		for (int k = rightBound - 1; k > q; k--, i++)
+		{
+			std::swap(array[k], array[i]);
+		}
 
-			if (leftSize >= rightSize * 1.5 || rightSize >= leftSize * 1.5)
+		if (i > 0 && j > 0)
+		{
+			size_t leftSize = leftBound - j;
+			size_t rightSize = i - rightBound;
+
+			if (leftSize >= rightSize * 5 || rightSize >= leftSize * 5)
 			{
-				QuickSortShift<T, S>::quickSort(array, leftBound, left - 1);
-				QuickSortShift<T, S>::quickSort(array, right + 1, rightBound);
+				QuickSortShift<T, S>::quickSort(array, leftBound, j );
+				QuickSortShift<T, S>::quickSort(array, i, rightBound);
 
 				auto tmp = std::make_shared<std::array<T, S>>(array);
-				MergeSortBottomUp<T, S>::merge(array, tmp.get(), leftBound, (left + right) / 2, rightBound);
+				MergeSortBottomUp<T, S>::merge(array, tmp.get(), leftBound, (i + j) / 2, rightBound);
 				return;
 			}
 		}
 
-		if (leftBound < left)
-			quickSort(array, leftBound, left - 1);
+		if (i > 0)
+			quickSort(array, i, rightBound);
 
-		if (right + 1 < rightBound)
-			quickSort(array, right + 1, rightBound);
+		if (j > 0)
+			quickSort(array, leftBound, j);
 	}
 
 	static void sort(std::array<T, S> &array)
