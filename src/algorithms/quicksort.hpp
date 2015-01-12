@@ -293,11 +293,12 @@ struct QuickSort3WayHybrid {
 
 			if (leftSize >= rightSize * 5 || rightSize >= leftSize * 5)
 			{
-				QuickSortShift<T, S>::quickSort(array, leftBound, right);
-				QuickSortShift<T, S>::quickSort(array, left, rightBound);
+				size_t middle = (leftBound + rightBound) >> 1;
+				QuickSortShift<T, S>::quickSort(array, leftBound, middle);
+				QuickSortShift<T, S>::quickSort(array, middle, rightBound);
 
 				auto tmp = std::make_shared<std::array<T, S>>(array);
-				MergeSortBottomUp<T, S>::merge(array, tmp.get(), leftBound, (left + right) / 2, rightBound);
+				MergeSortBottomUp<T, S>::merge(array, tmp.get(), leftBound, middle, rightBound);
 				return;
 			}
 		}
