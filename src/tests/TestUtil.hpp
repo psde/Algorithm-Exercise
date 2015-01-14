@@ -24,6 +24,7 @@ namespace Tests
 		return true;
 	}
 
+	// Returns 'true' if two arrays have the same elements
 	template<class T, size_t S>
 	bool hasSameElements(std::array<T, S> original, std::array<T, S> modified)
 	{
@@ -35,6 +36,19 @@ namespace Tests
 			}
 		}
 		return true;
+	}
+
+	template<class T, size_t S>
+	void printArray(std::ostream& stream, std::array<T, S> array)
+	{
+		for (size_t i = 0; i < S; i++)
+		{
+			stream << array[i];
+
+			if (i != S - 1)
+				stream << ", ";
+		}
+		stream << std::endl;
 	}
 
 	template<typename T, size_t S>
