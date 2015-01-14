@@ -119,10 +119,10 @@ struct QuickSortShift3Way {
 		size_t pivotIndex = (leftBound + rightBound) >> 1;
 		std::swap(array[pivotIndex], array[rightBound]);
 
-		int left = leftBound - 1;
-		int right = rightBound;
-		int pLeft = leftBound - 1;
-		int pRight = rightBound;
+		size_t left = leftBound - 1;
+		size_t right = rightBound;
+		size_t pLeft = leftBound - 1;
+		size_t pRight = rightBound;
 		T v = array[rightBound];
 
 		for (;;)
@@ -162,7 +162,7 @@ struct QuickSortShift3Way {
 			if (pLeft < S)
 			{
 				// Equal partitions from left to middle
-				for (int k = leftBound; k < pLeft; k++, right--)
+				for (size_t k = leftBound; k < pLeft; k++, right--)
 				{
 					std::swap(array[k], array[right]);
 				}
@@ -176,7 +176,7 @@ struct QuickSortShift3Way {
 			left = left + 1;
 			
 			// Equal partitions from right to middle
-			for (int k = rightBound - 1; k > pRight; k--, left++)
+			for (size_t k = rightBound - 1; k > pRight; k--, left++)
 			{
 				std::swap(array[k], array[left]);
 			}
@@ -250,10 +250,10 @@ struct QuickSort3WayHybrid {
 		size_t pivotIndex = (leftBound + rightBound) >> 1;
 		std::swap(array[pivotIndex], array[rightBound]);
 
-		int left = leftBound - 1;
-		int right = rightBound;
-		int pLeft = leftBound - 1;
-		int pRight = rightBound;
+		size_t left = leftBound - 1;
+		size_t right = rightBound;
+		size_t pLeft = leftBound - 1;
+		size_t pRight = rightBound;
 		T v = array[rightBound];
 
 		for (;;)
@@ -296,7 +296,7 @@ struct QuickSort3WayHybrid {
 			if (pLeft < S)
 			{
 				// Equal partitions from left to middle
-				for (int k = leftBound; k < pLeft; k++, right--)
+				for (size_t k = leftBound; k < pLeft; k++, right--)
 				{
 					std::swap(array[k], array[right]);
 				}
@@ -309,7 +309,7 @@ struct QuickSort3WayHybrid {
 		{
 			left = left + 1;
 			// Equal partitions from right to middle
-			for (int k = rightBound - 1; k > pRight; k--, left++)
+			for (size_t k = rightBound - 1; k > pRight; k--, left++)
 			{
 				std::swap(array[k], array[left]);
 			}
