@@ -154,25 +154,35 @@ struct QuickSortShift3Way {
 			}
 		}
 		std::swap(array[left], array[rightBound]);
-		right = left - 1;
-		left = left + 1;
-
-		// Equal partitions from end to middle
-		for (int k = leftBound; k < pLeft; k++, right--)
-		{
-			std::swap(array[k], array[right]);
-		}
-
-		for (int k = rightBound - 1; k > pRight; k--, left++)
-		{
-			std::swap(array[k], array[left]);			
-		}
-
-		if (left > 0)
-			quickSort(array, left, rightBound);
 
 		if (right > 0)
+		{
+			right = left - 1;
+
+			if (pLeft < S)
+			{
+				// Equal partitions from left to middle
+				for (int k = leftBound; k < pLeft; k++, right--)
+				{
+					std::swap(array[k], array[right]);
+				}
+			}
+
 			quickSort(array, leftBound, right);
+		}
+
+		if (left < S - 1)
+		{
+			left = left + 1;
+			
+			// Equal partitions from right to middle
+			for (int k = rightBound - 1; k > pRight; k--, left++)
+			{
+				std::swap(array[k], array[left]);
+			}
+
+			quickSort(array, left, rightBound);
+		}
 	}
 
 	static void sort(std::array<T, S> &array)
@@ -242,8 +252,8 @@ struct QuickSort3WayHybrid {
 
 		int left = leftBound - 1;
 		int right = rightBound;
-		int pRight = leftBound - 1;
-		int pLeft = rightBound;
+		int pLeft = leftBound - 1;
+		int pRight = rightBound;
 		T v = array[rightBound];
 
 		for (;;)
@@ -260,33 +270,54 @@ struct QuickSort3WayHybrid {
 
 			std::swap(array[left], array[right]);
 
+			// Equal to left end
 			if (array[left] == v)
 			{
-				pRight++;
-				std::swap(array[pRight], array[left]);
+				pLeft++;
+				std::swap(array[pLeft], array[left]);
 			}
 
+			// Equal to right end
 			if (array[right] == v)
 			{
-				pLeft--;
-				std::swap(array[right], array[pLeft]);
+				pRight--;
+				std::swap(array[right], array[pRight]);
 			}
 		}
 		std::swap(array[left], array[rightBound]);
-		right = left - 1;
-		left = left + 1;
 
-		for (int k = leftBound; k < pRight; k++, right--)
+		bool sortRight = false;
+		bool sortLeft = false;
+
+		if (right > 0)
 		{
-			std::swap(array[k], array[right]);
+			right = left - 1;
+
+			if (pLeft < S)
+			{
+				// Equal partitions from left to middle
+				for (int k = leftBound; k < pLeft; k++, right--)
+				{
+					std::swap(array[k], array[right]);
+				}
+			}
+
+			sortLeft = true;
 		}
 
-		for (int k = rightBound - 1; k > pLeft; k--, left++)
+		if (left < S - 1)
 		{
-			std::swap(array[k], array[left]);
+			left = left + 1;
+			// Equal partitions from right to middle
+			for (int k = rightBound - 1; k > pRight; k--, left++)
+			{
+				std::swap(array[k], array[left]);
+			}
+
+			sortRight = true;
 		}
 
-		if (left > 0 && right > 0)
+		if (sortRight && sortLeft)
 		{
 			size_t leftSize = leftBound - right;
 			size_t rightSize = left - rightBound;
@@ -303,11 +334,11 @@ struct QuickSort3WayHybrid {
 			}
 		}
 
-		if (left > 0)
-			quickSort(array, left, rightBound);
-
-		if (right > 0)
+		if (sortLeft)
 			quickSort(array, leftBound, right);
+
+		if (sortRight)
+			quickSort(array, left, rightBound);
 	}
 
 	static void sort(std::array<T, S> &array)
